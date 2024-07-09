@@ -1,3 +1,5 @@
+Up to now I've found no way to configure LXC and/or dnsmasq to produce predictable container IP addresses and there are several places where these are hard-coded into the scripts.  Please bear this in mind.
+
 ### For all services
 1. Check image env vars in `create_container.sh` (`DISTR`, `RELEA` and `ARCHE`)
 2. Check the base config `lxc_config.conf` - this is currently set-up for default lxc networking via `lxcbr0`
@@ -43,4 +45,27 @@ Steps 4-6 might not be necessary, but I suspect the hashing tool uses machine ra
     curl -X GET -u 'admin:my_password_999' --insecure https://IP_ADDR:9200
     curl -X GET -u 'admin:my_password_999' --insecure https://IP_ADDR:9200/_cat/indices
     ```
-   
+
+## PostgreSQL
+1. Build the container (first set `TRUSTED_HOST` environment variable in `postgres/build.sh`.  I currently have it set to the IPv4 address of my lxcbr0 device. The server will accept unauthenticated connections from here and will refuse connections from anywhere else other than loopback interface).
+
+```
+cd postgres
+. build.sh postgres_1 ../lxc_config.conf /abs/path/to/host/data/mnt/pnt
+```
+2. There is a script to test the build: `postgres/test_build.sh`.  It should be fairly self-explanatory, but will require some manual set-up - see the comments in the script.
+
+## Rabbitmq
+1.  If you've succeeded with the first two, then this should be a breeze.  There's no host data mount, so to build the service
+```
+cd rabbitmq; . build.sh rabbitmq ../lxc_config.conf
+```
+2.  Again, there's a test script, `test_build.sh`, which will require creating a python virtualenv and installing
+   a client package and replacing the container's IP address.
+
+## Redis
+Pretty much the same as above. The way you're supposed to configure redis-server to listen on all interfaces doesn't seem to be documented, but by infuriating trial-and-error I got it to work with `bind 0.0.0.0`.  The build should work without problems
+```
+cd redis; . build.sh redis ../lxc_config.conf
+```
+There is also a python script to ping the server from outside the container.  You'll need to run this is in an environment where `python -c import redis` works (e.g., in a virtualenv after `pip install --upgrade pip redis`).  Again, watch out for hard coded IP addresses lurking in the scripts.
