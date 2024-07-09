@@ -3,3 +3,4 @@
 **.pem
 **.key.pem
 opensearch/private_noVCS/
+.venv/
