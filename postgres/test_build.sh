@@ -3,6 +3,7 @@
 
 ##############################################
 # Test installation
+#
 # (container)
 # ($>) su postgres
 # ($>) create testdb
