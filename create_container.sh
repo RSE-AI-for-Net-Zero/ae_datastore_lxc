@@ -20,3 +20,9 @@ create_container ()
     lxc-create -n $FULL_NAME -t download -f ${CONFIG} -- -d ${DISTR} -r ${RELEA} -a ${ARCHE}
 }
 
+container_has_ipv4 () 
+{
+    test -n "`systemd-run --user --scope -p "Delegate=yes" -- lxc-info -i -n $1`"
+}
+
+
