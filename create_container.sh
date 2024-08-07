@@ -25,4 +25,15 @@ container_has_ipv4 ()
     test -n "`systemd-run --user --scope -p "Delegate=yes" -- lxc-info -i -n $1`"
 }
 
+get_arch ()
+{
+    if test $1 = "amd64"; then
+	echo "x64"
+    elif test $1 = "arm64"; then
+	echo "arm64"
+    else
+	echo "DO IT MANUALLY"
+    fi
+}
+
 

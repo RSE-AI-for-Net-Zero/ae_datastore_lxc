@@ -2,25 +2,27 @@
 
 set -eux
 
-cd /tmp
+# switch location to /tmp once all kinks ironed out.
+# Oftentimes find downloads gone on container reboot, which is fine when it doesn't take 3mins
+#   to download
 
-curl https://nodejs.org/download/release/v16.9.1/node-v16.9.1-linux-x64.tar.gz --output node-v16.9.1-linux-x64.tar.gz
+NODE=${NODE_PACKAGE}"."${NODE_SUFF}
 
-tar -xvf node-v16.9.1-linux-x64.tar.gz
+cd /home && \
+curl ${NODE_URL_PATH}"/"${NODE} --output ${NODE} && \
+curl ${NODE_URL_PATH}/"SHASUMS256.txt" --output "SHASUMS256.txt" && \
 
-cp --recursive node-v16.9.1-linux-x64/bin/* /usr/local/bin
-cp --recursive node-v16.9.1-linux-x64/lib/* /usr/local/lib
-cp --recursive node-v16.9.1-linux-x64/include/* /usr/local/include
-cp --recursive node-v16.9.1-linux-x64/share/* /usr/local/share
+_SHA256SUM=`grep -F "${NODE}" SHASUMS256.txt | cut -f 1 -d ' '` && \
+test -n "`sha256sum ${NODE} | grep -F "${_SHA256SUM}"`" && \
 
-if test -n "`node --version | grep -F '16.9.1'`" -a "`npm --version | grep -F '7.21.1'`"; then
-    echo "node " `node --version` "and npm " `npm --version` "installed!"
-else
-    echo "nope"
-    exit 1
-fi
+tar -xvf ${NODE} && \
 
-rm -rf /tmp/node-v16.9.1-linux-x64.tar.gz /tmp/node-v16.9.1-linux-x64.tar.gz
+cp --recursive ${NODE_PACKAGE}/bin/* /usr/local/bin && \
+cp --recursive ${NODE_PACKAGE}/lib/* /usr/local/lib  && \
+cp --recursive ${NODE_PACKAGE}/include/* /usr/local/include && \
+cp --recursive ${NODE_PACKAGE}/share/* /usr/local/share
+
+
 
 
 
