@@ -1,4 +1,4 @@
-BASE_NAME=$1 #'node_16_npm_7_python39_debian_bookworm_amd64'
+BASE_NAME=$1 #'nodejs_python39_debian_bookworm_amd64'
 FULL_NAME="app_"${BASE_NAME}
 
 . ../create_container.sh
@@ -16,7 +16,7 @@ while ! container_has_ipv4 ${FULL_NAME} -i; do
 done
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${FULL_NAME} --clear-env \
-	    -- /home/scripts/build_app.sh
+	    -- /home/host/scripts/build_app.sh
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-stop -n ${FULL_NAME}
 

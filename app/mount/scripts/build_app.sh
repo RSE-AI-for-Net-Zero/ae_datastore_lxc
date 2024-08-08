@@ -1,19 +1,14 @@
 #!/bin/bash
 
-# https://github.com/inveniosoftware/docker-invenio/blob/master/almalinux/Dockerfile
-
 set -eux
 
 export WORKING_DIR=/opt/invenio
 export INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
+export INVENIO_USER_ID=1001
 
-mkdir -p ${INVENIO_INSTANCE_PATH} && \
-    mkdir ${INVENIO_INSTANCE_PATH}/data \
-	  ${INVENIO_INSTANCE_PATH}/archive \
-	  ${INVENIO_INSTANCE_PATH}/static \
-	  ${WORKING_DIR}/src
+apt-get update && apt-get install -y libcairo2
 
-export INVENIO_USER_ID=999
+mkdir -p ${WORKING_DIR}/src
 
 chgrp -R 0 ${WORKING_DIR} && \
     chmod -R g=u ${WORKING_DIR}
@@ -21,4 +16,13 @@ chgrp -R 0 ${WORKING_DIR} && \
 useradd invenio --uid ${INVENIO_USER_ID} --gid 0 && \
     chown -R invenio:root ${WORKING_DIR}
 
-apt-get update && apt-get install -y imagemagick
+cd /tmp && git clone https://github.com/AI-for-Net-Zero/ae-datastore.git && \
+    cd ${WORKING_DIR}/src && \
+    TMP_ROOT=/tmp/ae-datastore/ae-datastore
+
+cp --recursive ${TMP_ROOT}/. .  
+pip install invenio-cli --root-user-action ignore
+invenio-cli install --no-dev --production
+
+
+
