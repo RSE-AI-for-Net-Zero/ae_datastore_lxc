@@ -2,5 +2,6 @@
 **.backup
 **.pem
 **.key.pem
+**.srl
 opensearch/private_noVCS/
 .venv/
