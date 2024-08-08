@@ -1,6 +1,6 @@
 DISTR="debian"
 RELEA="bookworm"
-ARCHE="amd64"
+ARCHE="arm64"
 
 
 am_i_root ()
