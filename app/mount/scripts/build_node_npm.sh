@@ -8,7 +8,7 @@ set -eux
 
 NODE=${NODE_PACKAGE}"."${NODE_SUFF}
 
-cd /home && \
+cd /tmp && \
 curl ${NODE_URL_PATH}"/"${NODE} --output ${NODE} && \
 curl ${NODE_URL_PATH}/"SHASUMS256.txt" --output "SHASUMS256.txt" && \
 

@@ -6,7 +6,7 @@ Up to now I've found no way to configure LXC and/or dnsmasq to produce predictab
 
 ### opensearch
 1. Generate a set of self-signed SSL certs `./opensearch/utils/gen_self_signed_certs.sh`
-2. Move them `mv *.pem opensearch/mount/scripts/`
+2. Move them `mv *.pem *.srl opensearch/mount/config/single-node/`
 3. build the service, e.g., 
    ```
    cd ae_datastore_lxc/opensearch/

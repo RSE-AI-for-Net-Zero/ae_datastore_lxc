@@ -2,7 +2,6 @@ DISTR="debian"
 RELEA="bookworm"
 ARCHE="amd64"
 
-
 am_i_root ()
 {
     if [ `id -u` -eq 0 ]; then

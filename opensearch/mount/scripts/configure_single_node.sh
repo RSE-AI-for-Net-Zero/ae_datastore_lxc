@@ -3,16 +3,18 @@
 set -eux
 
 # move the files we're about the edit
-mv /etc/opensearch/opensearch.yml /home/opensearch.yml.backup && \
-mv /etc/opensearch/jvm.options /home/jvm.options.backup && \
-mv /etc/opensearch/opensearch-security/internal_users.yml /home/internal_users.backup && \
+mv /etc/opensearch/opensearch.yml /home/host/opensearch.yml.backup && \
+mv /etc/opensearch/jvm.options /home/host/jvm.options.backup && \
+mv /etc/opensearch/opensearch-security/internal_users.yml \
+       /home/host/internal_users.backup && \
 
 # delete the demo certs
 rm -f /etc/opensearch/*.pem && \
     
 # copy our versions of config files and certs into /etc
-cp --recursive /home/scripts/config/single-node/* /etc/opensearch && \
-chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch/data /var/opensearch/log
+cp --recursive /home/host/config/single-node/* /etc/opensearch && \
+chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch/data \
+	  /var/opensearch/log
 
 systemctl restart opensearch
 
