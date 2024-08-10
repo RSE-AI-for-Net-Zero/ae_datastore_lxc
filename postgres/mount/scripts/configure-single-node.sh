@@ -3,7 +3,7 @@
 set -eux
 
 pg_dropcluster --stop 15 main
-pg_createcluster --start 15 ae_data -d /var/data
+pg_createcluster --start 15 ae_data -d /var/data -- -E UTF-8
 
 #Set a trusted host - e.g., IP address of LXC bridge device lxbr0
 LINE=$'host\tall\tall\t'${TRUSTED_HOST}$'\ttrust'
