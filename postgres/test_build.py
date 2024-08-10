@@ -5,7 +5,7 @@ from sqlalchemy.exc import ProgrammingError
 ip_address = str(sys.argv[1])
 
 def main(ip_address):    
-    engine = create_engine("postgresql://postgres:anything_at_all_here@" + ip_address + "/testdb")
+    engine = create_engine("postgresql://postgres:postgres@" + ip_address + "/testdb")
     
     with engine.connect() as conn:
         try:

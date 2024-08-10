@@ -14,7 +14,7 @@ echo """
      export PATH=${PATH}:${BIN_PATH}
 """ | tee -a /etc/bash.bashrc
 
-systemctl restart postgresql
+
 
 
 

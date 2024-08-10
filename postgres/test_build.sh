@@ -19,9 +19,9 @@
 ##############################################
 
 
-IP_ADDR="10.0.3.29"
 
-if python test_build.py $IP_ADDR; then
+
+if python test_build.py $1; then
     echo "Pass"
 else
     echo "Fail"
