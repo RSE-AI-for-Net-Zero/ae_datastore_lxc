@@ -1,5 +1,7 @@
 NAME=$1 #"postgres_1_debian_amd64"
-_TRUSTED_HOST=$2
+TRUSTED_HOST=$2
+
+export _TRUSTED_HOST=${TRUSTED_HOST}
 
 ####################################################################################
 #
@@ -11,11 +13,11 @@ _TRUSTED_HOST=$2
 #
 ####################################################################################
 
-export TRUSTED_HOST=$_TRUSTED_HOST
+
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
-	    --keep-var TRUSTED_HOST \
-	    -- /home/host/scripts/configure-single-node.sh
+	    --keep-var _TRUSTED_HOST \
+	    -- /home/host/scripts/add_trusted_host.sh
 
 
 
