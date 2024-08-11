@@ -55,6 +55,20 @@ cd postgres
 ```
 2. There is a script to test the build: `postgres/test_build.sh`.  It should be fairly self-explanatory, but will require some manual set-up - see the comments in the script.
 
+### Shutting down the server
+
+- Three shutdown modes: **smart** (SIGTERM), **fast** (SIGINT) and **immediate** (SIGQUIT).  Prefer **smart** mode - server refuses any new connections then waits for all sessions to terminate before shutting down.  Apparently, [systemd doesn't handle shutdown modes well](https://dba.stackexchange.com/questions/307781/proper-smart-shutdown-of-postgresql-server-for-pgdg-apt-packages-under-ubuntu), and so to smart shutdown a debian install do
+
+```
+su postgres -c 'pg_ctlcluster --mode smart 15 ae_data stop --skip-systemctl-redirect' 
+```
+or, [send a SIGTERM](https://www.postgresql.org/docs/15/server-shutdown.html)
+
+```
+kill -s SIGTERM <pid>
+```
+Add `lxc.signal.stop = SIGTERM` to LXC container config.  When container is stopped, all processes are then sent SIGTERM (defaults to SIGKILL, which is **bad in production**) and the server shuts down gracefully.
+
 ## Rabbitmq
 1.  If you've succeeded with the first two, then this should be a breeze.  There's no host data mount, so to build the service
 ```
