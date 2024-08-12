@@ -1,0 +1,14 @@
+[project]
+name = "invenio-cli_ae"
+version = "0.1"
+
+dependencies = [
+	     "invenio-cli"
+	     ]
+
+[project.scripts]
+invenio-cli-ae = "invenio_cli_ae:cli"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
