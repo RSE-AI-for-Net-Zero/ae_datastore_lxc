@@ -1,5 +1,5 @@
 [project]
-name = "invenio-cli_ae"
+name = "invenio-ae-cli"
 version = "0.1"
 
 dependencies = [
@@ -7,7 +7,7 @@ dependencies = [
 	     ]
 
 [project.scripts]
-invenio-cli-ae = "invenio_cli_ae:cli"
+invenio-ae-cli = "invenio_ae_cli:cli"
 
 [build-system]
 requires = ["setuptools"]
