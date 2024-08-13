@@ -1,5 +1,5 @@
 BASE_NAME=$1 #'nodejs_python39_debian_bookworm_amd64'
-FULL_NAME="app_"${BASE_NAME}
+FULL_NAME=$2"_"${BASE_NAME}
 
 . ../create_container.sh
 
