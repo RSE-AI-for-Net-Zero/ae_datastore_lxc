@@ -5,3 +5,4 @@
 **.srl
 opensearch/private_noVCS/
 .venv/
+docs/build
