@@ -12,7 +12,7 @@ mkdir -p ${WORKING_DIR}/src \
       ${INVENIO_INSTANCE_PATH}/archive \
       ${INVENIO_INSTANCE_PATH}/static
 
-useradd invenio --shell '/bin/bash' --system
+
 
 
 cd /tmp && git clone https://github.com/AI-for-Net-Zero/ae-datastore.git && \
@@ -35,11 +35,15 @@ cd /tmp && git clone https://github.com/AI-for-Net-Zero/ae-datastore.git && \
 # 1.2.1.2 - Packages commands install locked deps(False, False)
 # ---> CommandStep(["pipenv", "sync"]
 
+# Ssh!
 export PIPENV_VERBOSITY="-1"
+# Tell pipenv to create venv in the current directory
+export PIPENV_VENV_IN_PROJECT=1
 pipenv sync
 
+
 # 1.2.2 - update_instance_path - only affects config - pass
-# 1.2.3 - symlink invenio.cfg
+# 1.2.3 - copy invenio.cfg
 cp ${PWD}/invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg
 
 # 1.2.4 - copy templates/
@@ -70,8 +74,15 @@ pipenv run invenio webpack build
 # 
 # (https://github.com/inveniosoftware/docker-invenio/blob/master/almalinux/Dockerfile)
 
+useradd invenio --shell '/bin/bash' --system
 chown --recursive invenio:invenio ${INVENIO_INSTANCE_PATH}
-pip install celery uwsgi --root-user-action ignore
+
+
+# Remove pipenv
+pip uninstall pipenv 
+
+#source .venv/bin/activate
+#pip install celery uwsgi
 
 
 
