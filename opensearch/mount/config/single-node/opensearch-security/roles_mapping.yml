@@ -8,8 +8,7 @@ _meta:
 
 # Define your roles mapping here
 
-## Demo roles mapping
-complex-role:
+invenio-role:
   reserved: false
   hidden: false
   backend_roles: []
@@ -17,6 +16,7 @@ complex-role:
   users:
   - "invenio_usr"
   and_backend_roles: []
+
 
 all_access:
   reserved: false
