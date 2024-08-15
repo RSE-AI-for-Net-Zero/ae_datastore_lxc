@@ -21,3 +21,5 @@ SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@10.0.3.65/ae-datastore
 
 WSGI1_PROXIES = 2
 
+ALLOWED_HOSTS = ["10.0.3.27:5000"]
+

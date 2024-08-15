@@ -13,7 +13,7 @@ mkdir -p ${WORKING_DIR}/src \
       ${INVENIO_INSTANCE_PATH}/static
 
 
-
+mkdir -p /etc/conf.d
 
 cd /tmp && git clone https://github.com/AI-for-Net-Zero/ae-datastore.git && \
     cd ${WORKING_DIR}/src && \
@@ -76,6 +76,25 @@ pipenv run invenio webpack build
 
 useradd invenio --shell '/bin/bash' --system
 chown --recursive invenio:invenio ${INVENIO_INSTANCE_PATH}
+
+useradd celery --shell '/bin/sh' --system
+
+mkdir -p /var/run/celery /var/log/celery
+chown --recursive celery:celery /var/run/celery/ /var/log/celery/
+
+# Unsure about permissions here, but this ensure make the volatile /var/run/celery directory
+#  gets re-created on each reboot
+#
+# https://manpages.ubuntu.com/manpages/xenial/en/man5/tmpfiles.d.5.html
+touch /etc/tmpfiles.d/celery.conf
+echo "d /var/run/celery 0755 celery celery" | tee /etc/tmpfiles.d/celery.conf
+
+cp /home/host/config/etc/systemd/system/celery{,beat}.service /etc/systemd/system
+cp /home/host/config/etc/conf.d/celery /etc/conf.d/
+
+systemctl daemon-reload
+systemctl enable celery.service celerybeat.service
+systemctl start celery.service celerybeat.service
 
 
 # Remove pipenv
