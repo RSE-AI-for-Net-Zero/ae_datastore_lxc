@@ -12,7 +12,7 @@ admin:
   
 invenio_usr:
   hash: "$2y$12$ZDiRVs3ejwGlAIsurnYG5OoH8z5O9hwnaOj2qSOKJb19hhRwjAC7u"
-  reserved: false
+  reserved: true
   backend_roles: []
-  description: "app user"
+  description: "Invenio app user"
   
