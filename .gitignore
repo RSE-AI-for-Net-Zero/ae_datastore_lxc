@@ -3,6 +3,10 @@
 **.pem
 **.key.pem
 **.srl
+**.bkp
+**invenio.cfg
+app/mount/config/opt/invenio/var/instance/config.py
+
 opensearch/private_noVCS/
 .venv/
 docs/build

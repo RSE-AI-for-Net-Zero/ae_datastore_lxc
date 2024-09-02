@@ -3,6 +3,8 @@
 # 
 # commands = ServicesCommands(CONFIG)
 # steps = commands.setup(force=True, no_demo_data=False, stop_services=False, services=True)
+export INVENIO_INSTANCE_PATH="/opt/invenio/var/instance"
+
 #
 # self.ensure_containers_running()
 # self._cleanup() --- because force
@@ -72,10 +74,11 @@ demo()
 
 setup()
 {
-    _cleanup
     _setup
     fixtures
     demo
 }
 
 
+#flask --app invenio_app.wsgi_ui:application run --debug --host 0.0.0.0 --port 5000
+#flask --app invenio_app.wsgi_rest:application run --debug --host 0.0.0.0 --port 5001

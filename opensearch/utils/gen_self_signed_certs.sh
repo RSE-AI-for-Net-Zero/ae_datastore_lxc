@@ -25,6 +25,14 @@ openssl pkcs8 -inform PEM -outform PEM -in admin-key-temp.pem -topk8 -nocrypt -v
 openssl req -new -key admin-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=A" -out admin.csr
 openssl x509 -req -in admin.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out admin.pem -days 730
 
+# example_dot_com
+openssl genrsa -out example-dot-com-key-temp.pem 2048
+openssl pkcs8 -inform PEM -outform PEM -in example-dot-com-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out example-dot-com-key.pem
+openssl req -new -key example-dot-com-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=example.com" -out example-dot-com.csr
+echo 'subjectAltName=DNS:example.com' > example_dot_com.ext
+openssl x509 -req -in example-dot-com.csr -CA root-ca.pem -CAkey root-ca-key.pem -CAcreateserial -sha256 -out example-dot-com.pem -days 730 -extfile example_dot_com.ext
+
+
 # Node cert 1
 openssl genrsa -out node1-key-temp.pem 2048
 openssl pkcs8 -inform PEM -outform PEM -in node1-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out node1-key.pem

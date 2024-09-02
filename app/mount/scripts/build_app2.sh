@@ -1,8 +1,60 @@
 #!/bin/bash
 
-set -eux
+set -ex
 
-apt-get update && apt-get install -y libcairo2
+apt-get update && apt-get install -y build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev curl git libcairo2 \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+# /opt/invenio/var/data has already been created when setting up the bind mount
+mkdir -p /opt/invenio/src
+
+# Install python3.9
+export PYENV_ROOT="/opt/pyenv"
+curl https://pyenv.run --output /tmp/pyenv.run
+source /tmp/pyenv.run
+
+echo "export PYENV_ROOT=${PYENV_ROOT}" >> ~/.bashrc
+echo 'command -v pyenv >/dev/null || export PATH="${PYENV_ROOT}/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+
+echo "export PYENV_ROOT=${PYENV_ROOT}" >> ~/.profile
+echo 'command -v pyenv >/dev/null || export PATH="${PYENV_ROOT}/bin:$PATH"' >> ~/.profile
+echo 'eval "$(pyenv init -)"' >> ~/.profile
+
+set +x
+source /root/.profile > /dev/null
+set -x
+
+pyenv install 3.9
+
+#Set global python version
+pyenv global 3.9
+
+# Install nodejs & npm
+NODE_VER='v20.9.0'
+NODE_SUFF=${NODE_SUFFIX:-"linux-x64.tar.xz"}
+
+NODE_DIR="https://nodejs.org/download/release/"${NODE_VER}"/"
+NODE_BASE="node-"${NODE_VER}"-"${NODE_SUFF}
+cd /tmp &&
+    curl ${NODE_DIR}${NODE_BASE} --output ${NODE_BASE} &&
+    curl ${NODE_DIR}/"SHASUMS256.txt" --output "SHASUMS256.txt" && \
+    _SHA256SUM=`grep -F "${NODE_BASE}" SHASUMS256.txt | cut -f 1 -d ' '` && \
+    test -n "`sha256sum ${NODE_BASE} | grep -F "${_SHA256SUM}"`" && \
+
+    tar -xvf ${NODE_BASE} && \
+
+    # Remove tar.xz, tar.gz, etc.
+    NODE_BASE=${NODE_BASE%.*} && \
+    NODE_BASE=${NODE_BASE%.*} && \
+	
+
+cp --recursive ${NODE_BASE}/bin/* /usr/local/bin && \
+cp --recursive ${NODE_BASE}/lib/* /usr/local/lib  && \
+cp --recursive ${NODE_BASE}/include/* /usr/local/include && \
+cp --recursive ${NODE_BASE}/share/* /usr/local/share
+
 
 export WORKING_DIR=/opt/invenio
 export INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
@@ -34,12 +86,14 @@ cd /tmp && git clone https://github.com/AI-for-Net-Zero/ae-datastore.git && \
 # 1.2.1.2 - Packages commands install locked deps(False, False)
 # ---> CommandStep(["pipenv", "sync"]
 
+pip install pipenv
+
 # Ssh!
 export PIPENV_VERBOSITY="-1"
 # Tell pipenv to create venv in the current directory
 export PIPENV_VENV_IN_PROJECT=1
+export PIPENV_PYTHON=${PYENV_ROOT}/shims/python
 pipenv sync
-
 
 # 1.2.2 - update_instance_path - only affects config - pass
 # 1.2.3 - copy invenio.cfg
@@ -94,17 +148,6 @@ systemctl start celery.service celerybeat.service
 
 # Remove pipenv
 pip uninstall -y pipenv
-
-
-
-
-####################
-#### To do ##
-
-### Ownerships and permissions for /opt/invenio
-# chown --recursive invenio:invenio ${INVENIO_INSTANCE_PATH}
-
-
 
 
 

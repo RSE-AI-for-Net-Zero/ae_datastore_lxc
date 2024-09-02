@@ -13,4 +13,5 @@ ae-datastore documentation
    services
    application
    cli
+   development
 
