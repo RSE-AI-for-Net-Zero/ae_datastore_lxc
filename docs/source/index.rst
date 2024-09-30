@@ -14,4 +14,5 @@ ae-datastore documentation
    application
    cli
    development
+   auth
 
