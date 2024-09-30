@@ -17,7 +17,7 @@ NODE_SUFFIX= # Default is linux-x64.tar.xz, for something else, e.g. export NODE
 # chmod o-rx ~/.local/var/lxc/ae-datastore/data
 #
 # When build is finished and invenio user created in container, change permissions again
-
+#
 # ---------- To do ----------
 # set lxc.signal.stop
 #
@@ -35,10 +35,6 @@ systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${FULL_NAME}
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach --clear-env -n ${FULL_NAME} \
 	    --keep-var NODE_SUFFIX \
-            -- /home/host/scripts/build_app2.sh
-
-#systemd-run --user --scope -p "Delegate=yes" -- lxc-attach --clear-env -n ${FULL_NAME} \
-#            -- /home/host/scripts/build_app.sh
-
+            -- /home/host/scripts/build_base.sh
 
 
