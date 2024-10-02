@@ -7,11 +7,14 @@
 **invenio.cfg
 
 
-secrets.sh
+
 app/mount/skeleton/local_config.sh
 app/mount/common/config/etc/conf.d/invenio_celery
 
 
 opensearch/private_noVCS/
 .venv/
+
 docs/build
+**/secrets.sh
+
