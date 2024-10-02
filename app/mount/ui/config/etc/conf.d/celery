@@ -7,10 +7,9 @@ CELERYD_NODES="w1"
 
 # Absolute or relative path to the 'celery' command:
 CELERY_BIN="/opt/invenio/src/.venv/bin/celery"
-#CELERY_BIN="/virtualenvs/def/bin/celery"
 
 # App instance to use
-CELERY_APP="invenio_app.celery"
+CELERY_APP="invenio_factory_patch.celery"
 
 # How to call manage.py
 CELERYD_MULTI="multi"
@@ -28,5 +27,5 @@ CELERYD_LOG_LEVEL="INFO"
 # you may wish to add these options for Celery Beat
 CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
 CELERYBEAT_LOG_FILE="/var/run/celery/beat.log"
-
 INVENIO_INSTANCE_PATH="/opt/invenio/var/instance"
+

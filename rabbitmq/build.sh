@@ -1,9 +1,6 @@
 NAME=$1 #"rabbitmq"
 CONFIG_ROOT=$2 #"../lxc_config.conf"
 
-export RABBIT_USER='invenio-app'
-export RABBIT_PASSWD='generate_me_instead'
-
 
 echo $'\n'"lxc.mount.entry = ${PWD}/mount home/ none bind 0 0" \
     | cat ${CONFIG_ROOT} -\

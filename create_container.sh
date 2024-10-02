@@ -2,6 +2,8 @@ DISTR="debian"
 RELEA="bookworm"
 ARCHE="amd64"
 
+LXCBR0_IP="10.0.3.1"
+
 am_i_root ()
 {
     if [ `id -u` -eq 0 ]; then
@@ -19,10 +21,13 @@ create_container ()
     lxc-create -n $FULL_NAME -t download -f ${CONFIG} -- -d ${DISTR} -r ${RELEA} -a ${ARCHE}
 }
 
-container_has_ipv4 () 
+container_has_ipv4 ()
 {
-    test -n "`systemd-run --user --scope -p "Delegate=yes" -- lxc-info -i -n $1`"
+    IP="$(systemd-run --user --scope -p "Delegate=yes" -- lxc-info -i -H -n $1)"
+    echo ${IP}
+    test -n ${IP} && test ${IP} != ${LXCBR0_IP} 
 }
+
 
 get_arch ()
 {
