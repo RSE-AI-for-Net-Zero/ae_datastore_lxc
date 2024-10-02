@@ -28,13 +28,13 @@ apt-get update &&\
 rabbitmqctl add_user ${RABBIT_USER} ${RABBIT_PASSWD}
 
 # Create a virtual host
-rabbitmqctl add_vhost ae-datastore
+rabbitmqctl add_vhost 1
 
 # Set tags
 rabbitmqctl set_user_tags ${RABBIT_USER} administrator
 
 # Set permissions - allow everything
-rabbitmqctl set_permissions --vhost ae-datastore ${RABBIT_USER} ".*" ".*" ".*"
+rabbitmqctl set_permissions --vhost 1 ${RABBIT_USER} ".*" ".*" ".*"
 
 
 
