@@ -2,7 +2,7 @@
 
 set -eux
 
-TRUSTED_HOST=$_TRUSTED_HOST
+TRUSTED_HOST=$1
 
 # Smart shutdown
 su postgres -c 'pg_ctlcluster --mode smart 15 ae_data stop --skip-systemctl-redirect'

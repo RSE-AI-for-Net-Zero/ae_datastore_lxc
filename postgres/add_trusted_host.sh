@@ -13,8 +13,6 @@ export _TRUSTED_HOST=${TRUSTED_HOST}
 #
 ####################################################################################
 
-
-
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
 	    --keep-var _TRUSTED_HOST \
 	    -- /home/host/scripts/add_trusted_host.sh
