@@ -1,28 +1,3 @@
-#!/bin/bash
-
-set -eux
-
-image="debian/12"
-
-# Configuration
-# =============
-# Load secrets if available
-if [ -f secrets.sh ]; then
-	source secrets.sh	# **/secrets.sh ignored by git
-fi
-
-if [ -z ${RABBIT_USER} ]; then
-	read -p "Enter new RabbitMQ user: " RABBIT_USER
-fi
-if [ -z ${RABBIT_PASSWD} ]; then
-	read -p "Enter new RabbitMQ password: " RABBIT_PASSWD
-fi
-if [ -z ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} ]; then
-	read -p "Enter new opensearch admin password: " \
-		OPENSEARCH_INITIAL_ADMIN_PASSWORD
-fi
-
-
 # OpenSearch SSL Certificate generation
 # =====================================
 # This is from https://opensearch.org/docs/latest/security/configuration/generate-certificates/
@@ -35,8 +10,9 @@ fi
 #
 # To view a cert:
 # openssl x509 -in node1.pem -text -noout
+set -x
 
-CFG_PATH=opensearch/config/single-node
+CFG_PATH=mount/certs
 
 # Root CA
 openssl genrsa -out $CFG_PATH/root-ca-key.pem 2048
@@ -67,48 +43,19 @@ openssl genrsa -out client-key-temp.pem 2048
 openssl pkcs8 -inform PEM -outform PEM -in client-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/client-key.pem
 openssl req -new -key $CFG_PATH/client-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=client.dns.a-record" -out client.csr
 echo 'subjectAltName=DNS:client.dns.a-record' > client.ext
-openssl x509 -req -in client.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out opensearch/client.pem -days 730 -extfile client.ext
+openssl x509 -req -in client.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/client.pem -days 730 -extfile client.ext
+
+chmod o+r $CFG_PATH/*.pem
 
 # Cleanup
-rm admin-key-temp.pem
-rm admin.csr
-rm node1-key-temp.pem
-rm node1.csr
-rm node1.ext
-rm node2-key-temp.pem
-rm node2.csr
-rm node2.ext
-rm client-key-temp.pem
-rm client.csr
-rm client.ext
-
-
-### DEPLOY CONTAINERS ###
-
-# RabbitMQ
-incus launch images:$image rdm-rabbitmq
-incus file push -r rabbitmq rdm-rabbitmq/root/
-incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_USER} ${RABBIT_PASSWD}
-echo "remove bind mount at /home/host"
-
-# Postgresql
-echo "Set lxc.signal.stop = SIGTERM"
-echo "Mount data volume at /var/lib/postgres/data"
-incus launch images:$image rdm-postgresql-1
-incus file push -r postgresql rdm-postgresql-1/root/
-incus exec --cwd /root/postgresql rdm-postgresql-1 -- ./build.sh
-echo "remove bind mount at /home/host"
-
-# Redis
-incus launch images:$image rdm-redis
-incus file push -r redis rdm-redis/root/
-incus exec --cwd /root/redis rdm-redis -- ./build.sh
-echo "remove bind mount at /home/host"
-
-# OpenSearch
-incus launch images:$image rdm-opensearch
-incus file push -r opensearch rdm-opensearch/root/
-incus exec --cwd /root/opensearch rdm-opensearch -- ./build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
-echo "remove bind mount at /home/host"
-
-
+rm -f admin-key-temp.pem
+rm -f admin.csr
+rm -f node1-key-temp.pem
+rm -f node1.csr
+rm -f node1.ext
+rm -f node2-key-temp.pem
+rm -f node2.csr
+rm -f node2.ext
+rm -f client-key-temp.pem
+rm -f client.csr
+rm -f client.ext
