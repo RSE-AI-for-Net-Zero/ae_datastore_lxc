@@ -89,20 +89,26 @@ rm client.ext
 incus launch images:$image rdm-rabbitmq
 incus file push -r rabbitmq rdm-rabbitmq/root/
 incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_USER} ${RABBIT_PASSWD}
+echo "remove bind mount at /home/host"
 
 # Postgresql
-incus launch images:$image rdm-postgresql
-incus file push -r postgresql rdm-postgresql/root/
-incus exec --cwd /root/postgresql rdm-postgresql -- ./build.sh
+echo "Set lxc.signal.stop = SIGTERM"
+echo "Mount data volume at /var/lib/postgres/data"
+incus launch images:$image rdm-postgresql-1
+incus file push -r postgresql rdm-postgresql-1/root/
+incus exec --cwd /root/postgresql rdm-postgresql-1 -- ./build.sh
+echo "remove bind mount at /home/host"
 
 # Redis
 incus launch images:$image rdm-redis
 incus file push -r redis rdm-redis/root/
 incus exec --cwd /root/redis rdm-redis -- ./build.sh
+echo "remove bind mount at /home/host"
 
 # OpenSearch
 incus launch images:$image rdm-opensearch
 incus file push -r opensearch rdm-opensearch/root/
 incus exec --cwd /root/opensearch rdm-opensearch -- ./build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+echo "remove bind mount at /home/host"
 
 

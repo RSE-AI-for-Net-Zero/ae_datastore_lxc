@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # OpenSearch SSL Certificate generation
 # =====================================
 # This is from https://opensearch.org/docs/latest/security/configuration/generate-certificates/
@@ -12,6 +10,7 @@
 #
 # To view a cert:
 # openssl x509 -in node1.pem -text -noout
+set -x
 
 CFG_PATH=$1
 
@@ -46,20 +45,17 @@ openssl req -new -key $CFG_PATH/client-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/
 echo 'subjectAltName=DNS:client.dns.a-record' > client.ext
 openssl x509 -req -in client.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/client.pem -days 730 -extfile client.ext
 
-
 chmod o+r $CFG_PATH/*.pem
 
-
 # Cleanup
-rm admin-key-temp.pem
-rm admin.csr
-rm node1-key-temp.pem
-rm node1.csr
-rm node1.ext
-rm node2-key-temp.pem
-rm node2.csr
-rm node2.ext
-rm client-key-temp.pem
-rm client.csr
-rm client.ext
-
+rm -f admin-key-temp.pem
+rm -f admin.csr
+rm -f node1-key-temp.pem
+rm -f node1.csr
+rm -f node1.ext
+rm -f node2-key-temp.pem
+rm -f node2.csr
+rm -f node2.ext
+rm -f client-key-temp.pem
+rm -f client.csr
+rm -f client.ext
