@@ -31,15 +31,15 @@ source ../create_container.sh
 create_container ${NAME} ${NAME}.conf && \
     rm -f ${NAME}.conf && \ 
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${FULL_NAME} && \
+systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${NAME} && \
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${FULL_NAME} --clear-env \
+systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
 	       --keep-var OPENSEARCH_VERSION \
 	       --keep-var OPENSEARCH_INITIAL_ADMIN_PASSWORD \
 	       --keep-var GPG_SIGNATURE \
 	       -- /home/host/scripts/opensearch_build.sh && \
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${FULL_NAME} --clear-env \
+systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
 	       -- /home/host/scripts/configure_single_node.sh
 
     
