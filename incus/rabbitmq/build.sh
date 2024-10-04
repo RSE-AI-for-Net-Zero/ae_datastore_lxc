@@ -2,8 +2,7 @@
 
 set -eux
 
-export RABBIT_USER=$1
-export RABBIT_PASSWD=$2
+export RABBIT_PASSWD=$1
 
 apt-get update &&\
     apt-get install -y --no-install-recommends rabbitmq-server
@@ -28,16 +27,16 @@ apt-get update &&\
 #[ -f /etc/rabbitmq/advanced.config ] || touch /etc/rabbitmq/advanced.config
 
 # Create user
-rabbitmqctl add_user ${RABBIT_USER} ${RABBIT_PASSWD}
+rabbitmqctl add_user ae-datastore ${RABBIT_PASSWD}
 
 # Create a virtual host
 rabbitmqctl add_vhost 1
 
 # Set tags
-rabbitmqctl set_user_tags ${RABBIT_USER} administrator
+rabbitmqctl set_user_tags ae-datastore administrator
 
 # Set permissions - allow everything
-rabbitmqctl set_permissions --vhost 1 ${RABBIT_USER} ".*" ".*" ".*"
+rabbitmqctl set_permissions --vhost 1 ae-datastore ".*" ".*" ".*"
 
 
 

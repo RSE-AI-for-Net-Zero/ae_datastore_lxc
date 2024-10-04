@@ -104,13 +104,23 @@ incus exec --cwd /root/opensearch/scripts/data-node/ rdm-opensearch-d1 \
 #  the relevant lxc.mount.entry from the container's config file.
 #
 # Note this line is repeated for the other builds below
-incus file pull -r rdm-opensearch-d1/root/ /tmp
+incus file pull -r rdm-opensearch-d1/root/opensearch /tmp
+# A quick test that admin & user passwords set ok and that ae-datastore
+#  can create and destroy an index
+#
+# #Get cluster info:
+# curl -k -X GET -u 'admin:<admin-psswd>' https://rdm-opensearch-d1:9200
+#
+# #Create an index called 'doggos' then delete it
+# curl -k -X PUT -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
+# curl -k -X DELETE -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
+
 
 # RabbitMQ
 incus launch images:$image rdm-rabbitmq
 incus file push -r rabbitmq rdm-rabbitmq/root/
-incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_USER} ${RABBIT_PASSWD}
-echo "Incus cmd to remove bind mount at /home/host from container"
+incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_PASSWD}
+incus file pull -r rdm-rabbitmq/root/rabbitmq /tmp
 
 # Postgresql
 echo "Set lxc.signal.stop = SIGTERM"
@@ -120,24 +130,13 @@ incus file push -r postgresql rdm-postgresql-1/root/
 incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./build_node.sh
 incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./add_trusted_host.sh rdm-uwsgi-ui
 incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./add_trusted_host.sh rdm-uwsgi-api
-incus file pull -r rdm-opensearch-d1/root/ /tmp
+incus file pull -r rdm-postgresql-d1/root/postgresql /tmp
 
 # Redis
 incus launch images:$image rdm-redis
 incus file push -r redis rdm-redis/root/
 incus exec --cwd /root/redis rdm-redis -- ./build.sh
-echo "Incus cmd to remove bind mount at /home/host from container"
+incus file pull -r rdm-redis/root/redis /tmp
 
-
-
-# To test admin & user passwords set ok and that ae-datastore
-#  can create and destroy an index
-#
-# #Get cluster info:
-# curl -k -X GET -u 'admin:<admin-psswd>' https://rdm-opensearch-d1:9200
-#
-# #Create an index called 'doggos' then delete it
-# curl -k -X PUT -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
-# curl -k -X DELETE -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
 
 
