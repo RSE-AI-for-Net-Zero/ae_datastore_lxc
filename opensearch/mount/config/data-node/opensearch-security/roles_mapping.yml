@@ -14,7 +14,7 @@ invenio-role:
   backend_roles: []
   hosts: []
   users:
-  - "invenio_usr"
+  - "ae-datastore"
   and_backend_roles: []
 
 

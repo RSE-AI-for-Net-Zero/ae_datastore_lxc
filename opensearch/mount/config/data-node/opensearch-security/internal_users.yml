@@ -10,7 +10,7 @@ admin:
   - "admin"
   description: "Admin user"
   
-invenio_usr:
+ae-datastore:
   hash: "$2y$12$ZDiRVs3ejwGlAIsurnYG5OoH8z5O9hwnaOj2qSOKJb19hhRwjAC7u"
   reserved: true
   backend_roles: []

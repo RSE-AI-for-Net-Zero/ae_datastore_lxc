@@ -43,6 +43,8 @@ systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-en
 	    -- /home/host/scripts/data-node/build.sh
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
+	    --keep-var OS_ADMIN_PASSWD \
+	    --keep-var OS_AEDATASTORE_PASSWD \
 	    -- /home/host/scripts/data-node/configure.sh
 
 
