@@ -21,6 +21,14 @@ if [ -z ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} ]; then
 	read -p "Enter new opensearch admin password: " \
 		OPENSEARCH_INITIAL_ADMIN_PASSWORD
 fi
+if [ -z ${OPENSEARCH_ADMIN_PASSWD} ]; then
+	read -p "Enter new opensearch admin password: " \
+		OPENSEARCH_INITIAL_ADMIN_PASSWORD
+fi
+if [ -z ${OPENSEARCH_AEDATASTORE_PASSWD} ]; then
+	read -p "Enter new opensearch admin password: " \
+		OPENSEARCH_INITIAL_ADMIN_PASSWORD
+fi
 
 
 # OpenSearch SSL Certificate generation
@@ -89,7 +97,7 @@ rm client.ext
 incus launch images:$image rdm-rabbitmq
 incus file push -r rabbitmq rdm-rabbitmq/root/
 incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_USER} ${RABBIT_PASSWD}
-echo "remove bind mount at /home/host"
+echo "Incus cmd to remove bind mount at /home/host from container"
 
 # Postgresql
 echo "Set lxc.signal.stop = SIGTERM"
@@ -97,18 +105,31 @@ echo "Mount data volume at /var/lib/postgres/data"
 incus launch images:$image rdm-postgresql-1
 incus file push -r postgresql rdm-postgresql-1/root/
 incus exec --cwd /root/postgresql rdm-postgresql-1 -- ./build.sh
-echo "remove bind mount at /home/host"
+echo "Incus cmd to remove bind mount at /home/host from container"
 
 # Redis
 incus launch images:$image rdm-redis
 incus file push -r redis rdm-redis/root/
 incus exec --cwd /root/redis rdm-redis -- ./build.sh
-echo "remove bind mount at /home/host"
+echo "Incus cmd to remove bind mount at /home/host from container"
 
 # OpenSearch
-incus launch images:$image rdm-opensearch
-incus file push -r opensearch rdm-opensearch/root/
-incus exec --cwd /root/opensearch rdm-opensearch -- ./build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
-echo "remove bind mount at /home/host"
+incus launch images:$image rdm-opensearch-d1
+incus file push -r opensearch rdm-opensearch-d1/root/
+incus exec --cwd /root/opensearch rdm-opensearch-d1 \
+      -- ./build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
+                    ${OPENSEARCH_ADMIN_PASSWORD} \
+                    ${OPENSEARCH_AEDATASTORE_PASSWD}
+echo "Is this the Incus cmd to remove bind mount at /root from container?"
+incus file pull -r rdm-opensearch-d1/root/ /tmp
+# To test admin & user passwords set ok and that ae-datastore
+#  can create and destroy an index
+#
+# #Get cluster info:
+# curl -k -X GET -u 'admin:<admin-psswd>' https://rdm-opensearch-d1:9200
+#
+# #Create an index called 'doggos' then delete it
+# curl -k -X PUT -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
+# curl -k -X DELETE -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
 
 

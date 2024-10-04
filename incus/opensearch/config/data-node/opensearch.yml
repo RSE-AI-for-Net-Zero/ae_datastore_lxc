@@ -30,11 +30,11 @@ node.name: data-1
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: /var/lib/opensearch
+path.data: /var/opensearch/data
 #
 # Path to log files:
 #
-path.logs: /var/log/opensearch
+path.logs: /var/opensearch/log
 #
 # ----------------------------------- Memory -----------------------------------
 #
