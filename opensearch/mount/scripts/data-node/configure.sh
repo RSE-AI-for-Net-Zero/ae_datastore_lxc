@@ -14,8 +14,8 @@ cp --recursive /home/host/config/data-node/* /etc/opensearch && \
     chmod o-r /etc/opensearch/*.pem
 
 # Set the password hashes for admin and ae-datastore users
-ADMIN_HASH=$(hash.sh -p ${OS_ADMIN_PASSWD})
-AEDS_HASH=$(hash.sh -p ${OS_AEDATASTORE_PASSWD})
+ADMIN_HASH=$(hash.sh -p ${OPENSEARCH_ADMIN_PASSWD})
+AEDS_HASH=$(hash.sh -p ${OPENSEARCH_AEDATASTORE_PASSWD})
 INTUSERS=/home/host/config/data-node/opensearch-security/internal_users.yml
 TMPUSERS=/tmp/internal_users.yml
 # See https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
