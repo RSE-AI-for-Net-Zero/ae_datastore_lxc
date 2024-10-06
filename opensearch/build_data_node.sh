@@ -21,7 +21,7 @@ export GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
 
 echo $'\n'"lxc.mount.entry = ${PWD}/mount home/host none bind,create=dir 0 0"\
      $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/data none bind,create=dir 0 0"\
-     $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/log none bind,create=dir 0 0"\
+     $'\n'"lxc.mount.entry = ${LOG_MNT} var/log/opensearch none bind,create=dir 0 0"\
     | cat ${CONFIG_ROOT} -\
     | tee -a ${NAME}.conf
 
