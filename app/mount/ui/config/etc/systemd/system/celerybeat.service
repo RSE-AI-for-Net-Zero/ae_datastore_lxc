@@ -7,7 +7,6 @@ Type=simple
 User=celery
 Group=celery
 EnvironmentFile=/etc/conf.d/celery
-EnvironmentFile=/etc/conf.d/invenio_celery
 WorkingDirectory=/opt/celery/var
 ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} beat  \
     --pidfile=${CELERYBEAT_PID_FILE} \

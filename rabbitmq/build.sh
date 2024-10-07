@@ -14,7 +14,6 @@ create_container ${NAME} ${NAME}.conf && \
     systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${NAME} && \
     
     lxc-attach --clear-env -n ${NAME} \
-	        --keep-var RABBIT_USER \
 		--keep-var RABBIT_PASSWD \
 		 -- /home/host/scripts/build.sh
     

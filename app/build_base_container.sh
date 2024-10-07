@@ -3,6 +3,7 @@ CONFIG_ROOT=$2 #../lxc_config.conf
 DATA_MNT=$3 #/home/leeb/.local/var/lxc/ae-datastore/data
 
 source ../create_container.sh
+source ../secrets.sh
 
 NODE_SUFFIX= # Default is linux-x64.tar.xz, for something else, e.g. export NODE_SUFFIX='linux-arm64.tar.gz'
 
@@ -31,10 +32,12 @@ echo $'\n'"lxc.mount.entry = ${PWD}/mount home/host none bind,create=dir 0 0"\
 create_container ${NAME} ${NAME}.conf && \
     rm -f ${NAME}.conf && \
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${FULL_NAME}    
+systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${NAME}    
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-attach --clear-env -n ${FULL_NAME} \
+systemd-run --user --scope -p "Delegate=yes" -- lxc-attach --clear-env -n ${NAME} \
 	    --keep-var NODE_SUFFIX \
+	    --keep-var RABBIT_PASSWD \
+	    --keep-var OPENSEARCH_AEDATASTORE_PASSWD \
             -- /home/host/scripts/build_base.sh
 
 

@@ -67,7 +67,7 @@ mkdir -p ${WORKING_DIR_SRC} \
 
 mkdir -p /etc/conf.d
 
-cp --recursive /home/host/config/* ${WORKING_DIR_SRC}
+cp --recursive /home/host/skeleton/* ${WORKING_DIR_SRC}
 
 
 
@@ -114,15 +114,15 @@ cp --recursive ${PWD}/templates/ ${INVENIO_INSTANCE_PATH}/templates
 cp --recursive ${PWD}/app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
 # 1.2.6 - update_statics_and_assets(force=True, flask_env='production', log_file=None)
-pipenv run invenio collect --verbose
-pipenv run invenio webpack clean create
-pipenv run invenio webpack install
+pipenv run ae-datastore collect --verbose
+pipenv run ae-datastore webpack clean create
+pipenv run ae-datastore webpack install
 cp --recursive static/* ${INVENIO_INSTANCE_PATH}/static
 cp --recursive assets/* ${INVENIO_INSTANCE_PATH}/assets
 
 ## invenio-cli then goes and symlinks ./assets/* to their corresponding files in <instance_path/assets
 ##  Why?  Not sure yet.
-pipenv run invenio webpack build
+pipenv run ae-datastore webpack build
 # Remove pipenv
 pip uninstall -y pipenv --root-user-action ignore
 

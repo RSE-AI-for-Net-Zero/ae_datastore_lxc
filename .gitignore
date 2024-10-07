@@ -9,7 +9,6 @@
 
 
 app/mount/skeleton/local_config.sh
-app/mount/common/config/etc/conf.d/invenio_celery
 opensearch/mount/certs
 
 opensearch/private_noVCS/

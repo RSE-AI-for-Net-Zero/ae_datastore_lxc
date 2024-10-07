@@ -13,12 +13,21 @@ set -ex
 # 
 # (https://github.com/inveniosoftware/docker-invenio/blob/master/almalinux/Dockerfile)
 
+
+
 useradd celery --shell '/bin/sh' --system --home-dir /opt/celery
-mkdir -p /var/run/celery /var/log/celery /opt/celery
+mkdir -p /var/run/celery /var/log/celery /opt/celery/var
+
+
+
+cp /home/host/ui/config/etc/systemd/system/celery{,beat}.service /etc/systemd/system
+cp /home/host/ui/config/etc/conf.d/celery /etc/conf.d/
+
+
+#useradd ae-datastore --shell '/bin/sh' --system --home-dir /opt/invenio
+
 chown --recursive celery:celery /var/run/celery/ /var/log/celery/ /opt/celery/var
-
-useradd invenio --shell '/bin/sh' --system --home-dir /opt/invenio
-
+#chown --recursive ae-datastore:ae-datastore /opt/invenio/var/instance
 
 
 # Unsure about permissions here, but this should ensure the volatile /var/run/celery directory
@@ -28,12 +37,8 @@ useradd invenio --shell '/bin/sh' --system --home-dir /opt/invenio
 touch /etc/tmpfiles.d/celery.conf
 echo "d /var/run/celery 0755 celery celery" | tee /etc/tmpfiles.d/celery.conf
 
-cp /home/host/ui/config/etc/systemd/system/celery{,beat}.service /etc/systemd/system
-cp /home/host/ui/config/etc/conf.d/celery /etc/conf.d/
-cp /home/host/config/local_config.sh /etc/
-
 #*** FILE NOT UNDER VCS ***
-cp /home/host/ui/config/etc/conf.d/invenio_celery /etc/conf.d/
+#cp /home/host/common/config/etc/conf.d/invenio_celery /etc/conf.d/
 
 systemctl daemon-reload
 systemctl enable celery.service celerybeat.service

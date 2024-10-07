@@ -1,5 +1,5 @@
 BASE_NAME=$1 #'base_debian_bookworm_amd64'
-FULL_NAME=$2"_"${BASE_NAME}
+FULL_NAME=${BASE_NAME}"-"$2
 
 source ../create_container.sh
 
