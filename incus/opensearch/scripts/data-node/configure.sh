@@ -35,8 +35,8 @@ sed -ri "/^ae-datastore\:\s*$/, /^\s*$/ s~(^\s*hash)\:\s*\S+\s*~\1: \"${AEDS_HAS
 
 cp ${TMPUSERS} /etc/opensearch/opensearch-security/internal_users.yml
     
-chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch/data \
-	  /var/opensearch/log /var/log/opensearch
+chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch \
+	  /var/log/opensearch
 
 systemctl enable opensearch
 systemctl restart opensearch

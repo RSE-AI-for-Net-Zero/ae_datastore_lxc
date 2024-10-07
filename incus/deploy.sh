@@ -94,6 +94,11 @@ rm client.ext
 ### DEPLOY CONTAINERS ###
 
 # OpenSearch
+echo """
+Bind mounts:
+Data -> /var/opensearch/data
+Logs -> /var/log/opensearch
+"""
 incus launch images:$image rdm-opensearch-d1
 incus file push -r opensearch rdm-opensearch-d1/root/
 incus exec --cwd /root/opensearch/scripts/data-node/ rdm-opensearch-d1 \
@@ -124,7 +129,7 @@ incus file pull -r rdm-rabbitmq/root/rabbitmq /tmp
 
 # Postgresql
 echo "Set lxc.signal.stop = SIGTERM"
-echo "Mount data volume at /var/lib/postgres/data"
+echo "Bind mount data volume at /var/lib/postgres/data"
 incus launch images:$image rdm-postgresql-1
 incus file push -r postgresql rdm-postgresql-1/root/
 incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./build_node.sh
