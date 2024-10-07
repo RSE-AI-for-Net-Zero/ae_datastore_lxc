@@ -22,7 +22,7 @@ systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-en
 	    -- /home/host/scripts/add_trusted_host.sh "aedataui"
 
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${NAME} --clear-env \
-	        -- /home/host/scripts/add_trusted_host.sh "aedataapi" 
+	    -- /home/host/scripts/add_trusted_host.sh "aedataapi" 
 
 
 
