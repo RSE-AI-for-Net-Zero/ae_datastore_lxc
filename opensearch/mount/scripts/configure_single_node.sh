@@ -9,12 +9,13 @@ mv /etc/opensearch/opensearch-security/internal_users.yml \
        /home/host/internal_users.backup && \
 
 # delete the demo certs
-rm -f /etc/opensearch/*.pem && \
+rm -f /etc/opensearch/*.pem
     
 # copy our versions of config files and certs into /etc
+
 cp --recursive /home/host/config/single-node/* /etc/opensearch && \
 chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch/data \
-	  /var/opensearch/log
+      /var/opensearch/log
 
 systemctl restart opensearch
 
