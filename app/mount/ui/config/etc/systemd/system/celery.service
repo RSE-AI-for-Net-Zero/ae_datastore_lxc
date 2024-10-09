@@ -7,6 +7,10 @@ Type=forking
 User=celery
 Group=celery
 EnvironmentFile=/etc/conf.d/celery
+LoadCredential=rabbitmq-passwd:/etc/credentials/rabbit.psswd
+LoadCredential=ae-datastore-opensearch-passwd:/etc/credentials/opensearch_aedatastore.psswd 
+Environment=RABBIT_PASSWD_PATH=%d/rabbitmq-passwd
+Environment=OPENSEARCH_AEDATASTORE_PASSWD_PATH=%/ae-datastore-opensearch-passwd
 WorkingDirectory=/opt/celery/var
 ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} multi start ${CELERYD_NODES} \
     --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} \
