@@ -11,6 +11,7 @@ rm -f /etc/opensearch/*.pem && \
 # copy our versions of config files and certs into /etc
 cp --recursive /home/host/config/data-node/* /etc/opensearch && \
     cp /home/host/certs/*.pem /etc/opensearch && \
+    chown opensearch:opensearch /etc/opensearch/*.pem && \
     chmod o-r /etc/opensearch/*.pem
 
 # Set the password hashes for admin and ae-datastore users
@@ -35,15 +36,20 @@ sed -ri "/^ae-datastore\:\s*$/, /^\s*$/ s~(^\s*hash)\:\s*\S+\s*~\1: \"${AEDS_HAS
 
 cp ${TMPUSERS} /etc/opensearch/opensearch-security/internal_users.yml
     
-chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch \
+chown --recursive opensearch:opensearch /var/opensearch \
 	  /var/log/opensearch
 
-systemctl enable opensearch
-systemctl restart opensearch
+systemctl daemon-reload
+systemctl enable opensearch.service
+systemctl start opensearch.service
+
+sleep 20
 
 # run the enigmatic security admin script!
-/usr/share/opensearch/plugins/opensearch-security/tools/securityadmin.sh \
+securityadmin.sh \
     -cd /etc/opensearch/opensearch-security/ \
     -cacert /etc/opensearch/root-ca.pem \
     -cert /etc/opensearch/admin.pem \
     -key /etc/opensearch/admin-key.pem -icl -nhnv
+
+
