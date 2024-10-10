@@ -2,16 +2,20 @@
 set -eux
 
 export OPENSEARCH_JAVA_HOME=/usr/share/opensearch/jdk
-
 export PATH="/usr/share/opensearch/plugins/opensearch-security/tools/:${PATH}"
 
 # delete the demo certs
 rm -f /etc/opensearch/*.pem && \
     
 # copy our versions of config files and certs into /etc
-cp --recursive /home/host/config/data-node/* /etc/opensearch && \
-    cp /home/host/certs/*.pem /etc/opensearch && \
-    chmod o-r /etc/opensearch/*.pem
+cp -R /home/host/config/data-node/* /etc/opensearch && \
+    cp -R /home/host/ssl/* /etc/opensearch && \
+    chown -R opensearch:opensearch /etc/opensearch && \
+    chmod 644 /etc/opensearch/certs/* && \
+    chmod 600 /etc/opensearch/keys/*
+
+# See: https://opensearch.org/docs/latest/security/configuration/index/
+
 
 # Set the password hashes for admin and ae-datastore users
 ADMIN_HASH=$(hash.sh -p ${OPENSEARCH_ADMIN_PASSWD})
@@ -35,15 +39,20 @@ sed -ri "/^ae-datastore\:\s*$/, /^\s*$/ s~(^\s*hash)\:\s*\S+\s*~\1: \"${AEDS_HAS
 
 cp ${TMPUSERS} /etc/opensearch/opensearch-security/internal_users.yml
     
-chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch \
+chown --recursive opensearch:opensearch /var/opensearch \
 	  /var/log/opensearch
 
-systemctl enable opensearch
-systemctl restart opensearch
+systemctl daemon-reload
+systemctl enable opensearch.service
+systemctl start opensearch.service
+
+sleep 20
 
 # run the enigmatic security admin script!
-/usr/share/opensearch/plugins/opensearch-security/tools/securityadmin.sh \
+securityadmin.sh \
     -cd /etc/opensearch/opensearch-security/ \
-    -cacert /etc/opensearch/root-ca.pem \
-    -cert /etc/opensearch/admin.pem \
-    -key /etc/opensearch/admin-key.pem -icl -nhnv
+    -cacert /etc/opensearch/certs/root-ca.pem \
+    -cert /etc/opensearch/certs/admin.pem \
+    -key /etc/opensearch/keys/admin-key.pem -icl -nhnv
+
+

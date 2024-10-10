@@ -28,7 +28,7 @@ echo $'\n'"lxc.mount.entry = ${PWD}/mount home/host none bind,create=dir 0 0"\
 source ../create_container.sh
 source ../secrets.sh
 
-bash create_self_signed_ssl_certs.sh mount/certs
+bash create_self_signed_ssl_certs.sh mount/ssl
 
 create_container ${NAME} ${NAME}.conf && \
     rm -f ${NAME}.conf && \ 

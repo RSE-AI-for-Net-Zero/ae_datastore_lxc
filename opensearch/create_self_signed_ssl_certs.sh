@@ -14,38 +14,40 @@ set -x
 
 CFG_PATH=$1
 
+mkdir -p ${CFG_PATH}/certs ${CFG_PATH}/keys
+
 # Root CA
-openssl genrsa -out $CFG_PATH/root-ca-key.pem 2048
-openssl req -new -x509 -sha256 -key $CFG_PATH/root-ca-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=ROOT" -out $CFG_PATH/root-ca.pem -days 730
+openssl genrsa -out $CFG_PATH/keys/root-ca-key.pem 2048
+openssl req -new -x509 -sha256 -key $CFG_PATH/keys/root-ca-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=ROOT" -out $CFG_PATH/certs/root-ca.pem -days 730
 
 # Admin cert
 openssl genrsa -out admin-key-temp.pem 2048
-openssl pkcs8 -inform PEM -outform PEM -in admin-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/admin-key.pem
-openssl req -new -key $CFG_PATH/admin-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=A" -out admin.csr
-openssl x509 -req -in admin.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/admin.pem -days 730
+openssl pkcs8 -inform PEM -outform PEM -in admin-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/keys/admin-key.pem
+openssl req -new -key $CFG_PATH/keys/admin-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=A" -out admin.csr
+openssl x509 -req -in admin.csr -CA $CFG_PATH/certs/root-ca.pem -CAkey $CFG_PATH/keys/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/certs/admin.pem -days 730
 
 # Node cert 1
 openssl genrsa -out node1-key-temp.pem 2048
-openssl pkcs8 -inform PEM -outform PEM -in node1-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/node1-key.pem
-openssl req -new -key $CFG_PATH/node1-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=node1.dns.a-record" -out node1.csr
+openssl pkcs8 -inform PEM -outform PEM -in node1-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/keys/node1-key.pem
+openssl req -new -key $CFG_PATH/keys/node1-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=node1.dns.a-record" -out node1.csr
 echo 'subjectAltName=DNS:node1.dns.a-record' > node1.ext
-openssl x509 -req -in node1.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/node1.pem -days 730 -extfile node1.ext
+openssl x509 -req -in node1.csr -CA $CFG_PATH/certs/root-ca.pem -CAkey $CFG_PATH/keys/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/certs/node1.pem -days 730 -extfile node1.ext
 
 # Node cert 2
 openssl genrsa -out node2-key-temp.pem 2048
-openssl pkcs8 -inform PEM -outform PEM -in node2-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/node2-key.pem
-openssl req -new -key $CFG_PATH/node2-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=node2.dns.a-record" -out node2.csr
+openssl pkcs8 -inform PEM -outform PEM -in node2-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/keys/node2-key.pem
+openssl req -new -key $CFG_PATH/keys/node2-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=node2.dns.a-record" -out node2.csr
 echo 'subjectAltName=DNS:node2.dns.a-record' > node2.ext
-openssl x509 -req -in node2.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/node2.pem -days 730 -extfile node2.ext
+openssl x509 -req -in node2.csr -CA $CFG_PATH/certs/root-ca.pem -CAkey $CFG_PATH/keys/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/certs/node2.pem -days 730 -extfile node2.ext
 
 # Client cert
-openssl genrsa -out client-key-temp.pem 2048
-openssl pkcs8 -inform PEM -outform PEM -in client-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/client-key.pem
-openssl req -new -key $CFG_PATH/client-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=client.dns.a-record" -out client.csr
-echo 'subjectAltName=DNS:client.dns.a-record' > client.ext
-openssl x509 -req -in client.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/client.pem -days 730 -extfile client.ext
+#openssl genrsa -out client-key-temp.pem 2048
+#openssl pkcs8 -inform PEM -outform PEM -in client-key-temp.pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -out $CFG_PATH/client-key.pem
+#openssl req -new -key $CFG_PATH/client-key.pem -subj "/C=UK/ST=ENGLAND/L=LONDON/O=IMPERIAL/OU=AERONAUTICS/CN=client.dns.a-record" -out client.csr
+#echo 'subjectAltName=DNS:client.dns.a-record' > client.ext
+#openssl x509 -req -in client.csr -CA $CFG_PATH/root-ca.pem -CAkey $CFG_PATH/root-ca-key.pem -CAcreateserial -sha256 -out $CFG_PATH/client.pem -days 730 -extfile client.ext
 
-chmod o+r $CFG_PATH/*.pem
+chmod o+r ${CFG_PATH}/keys/*
 
 # Cleanup
 rm -f admin-key-temp.pem
@@ -56,6 +58,6 @@ rm -f node1.ext
 rm -f node2-key-temp.pem
 rm -f node2.csr
 rm -f node2.ext
-rm -f client-key-temp.pem
-rm -f client.csr
-rm -f client.ext
+#rm -f client-key-temp.pem
+#rm -f client.csr
+#rm -f client.ext
