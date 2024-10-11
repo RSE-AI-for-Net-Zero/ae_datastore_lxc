@@ -40,4 +40,6 @@ systemd-run --user --scope -p "Delegate=yes" -- lxc-attach --clear-env -n ${NAME
 	    --keep-var OPENSEARCH_AEDATASTORE_PASSWD \
             -- /home/host/scripts/build_base.sh
 
+systemd-run --user --scope -p "Delegate=yes" -- lxc-stop -n ${NAME}
+
 

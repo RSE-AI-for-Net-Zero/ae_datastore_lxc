@@ -15,7 +15,6 @@ while ! container_has_ipv4 ${FULL_NAME} -i; do
     sleep 1
 done
 
-
 systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${FULL_NAME} --clear-env \
 	    --keep-var RABBIT_PASSWD \
 	    --keep-var OPENSEARCH_AEDATASTORE_PASSWD \
