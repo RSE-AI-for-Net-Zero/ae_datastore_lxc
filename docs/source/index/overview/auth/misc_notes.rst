@@ -1,6 +1,5 @@
-=============================
 Invenio-Accounts config
-=============================
+-----------------------
 
 ``ACCOUNTS_RETENTION_PERIOD`` tasks.delete_ips
 
@@ -43,15 +42,14 @@ Used ``pip-compile`` on invenio-ldapclient.  We end up with::
     #   invenio-userprofiles
 
 ``flask_babelex`` has the ``locale_selector`` attribute, not ``flask_babel``.
+
 ^^^^^^^^^^^^^
 As-is
 ^^^^^^^^^^^^^
 ::
    OAUTHCLIENT_AUTO_REDIRECT_TO_EXTERNAL_LOGIN = False
    ACCOUNTS_LOCAL_LOGIN_ENABLED = True
-   extensions['security'].login_form = invenio_accounts.forms.login_form_factory(
-                                                                extensions['security'].login_form,
-								app)
+   extensions['security'].login_form = invenio_accounts.forms.login_form_factory(extensions['security'].login_form,app)
    extensions['security'] = True
 								
 								
@@ -63,9 +61,8 @@ As-is
 if validate on submit:
 - ``login_user(form.user)``
 - calls flask_login.login_user(form.user, False)
- 
 - security is trackable, so sets user login info
- - sends `identity_changed` signal
+- sends `identity_changed` signal
 - ``after_this_request``
 - get_post_login_redirect
 

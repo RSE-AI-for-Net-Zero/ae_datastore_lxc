@@ -1,24 +1,15 @@
-========================
-Opensearch
-========================
+OpenSearch
+--------------------
 
-------------------------
-Installation
-------------------------
+Security configuration:
 
-------------------------
-Security configuration
-------------------------
 
-Configuration files, kept under version control, are found in ``opensearch/mount/config/.../``.  These will set an initial configuration.  To effect changes to these after initialisation, see :ref:`lab-opensearch_update_config`.
+Configuration files, kept under version control, are found in ``opensearch/mount/config/.../``.  These will set an initial configuration.  To effect changes to these after initialisation, see ...
 
 
 
-
-.. _lab-opensearch_update_config:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Updating configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 Edit the files in ``opensearch/mount/config/.../``, then run
 
@@ -33,13 +24,12 @@ This copies the config files to the appropriate location inside the container's 
 
 Configuration of a live cluster can also be done via the REST API using admin credentials.
 
-------------------------
-Some common API commands
-------------------------
 
-^^^^^^^^^^^^^^^^
+Some common API commands:
+
+
 e.g., with `curl`
-^^^^^^^^^^^^^^^^
+
 ::
    
   curl -X POST -k -u 'invenio_usr:password_1234' \
@@ -47,14 +37,12 @@ e.g., with `curl`
   -H "Content-type: application/json" \
   -d '{"name": "Snowy", "Favourite toy": "Ball of wool"}'
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 e.g., with Python's `requests`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
   
 
-^^^^^^^^^^^^^^^^
-Create an index
-^^^^^^^^^^^^^^^^
+
+Create an index:
 
 See `docs <https://opensearch.org/docs/2.15/api-reference/index-apis/create-index/>`_
 
@@ -62,11 +50,11 @@ See `docs <https://opensearch.org/docs/2.15/api-reference/index-apis/create-inde
    
   PUT <index-name>
 
-^^^^^^^^^^^^^^^^
-Index a document
-^^^^^^^^^^^^^^^^
 
-See `docs <https://opensearch.org/docs/2.15/api-reference/document-apis/index-document/>`_
+Index a document
+
+
+See `docs2 <https://opensearch.org/docs/2.15/api-reference/document-apis/index-document/>`_
 
 Index (or update) a document with specific id::
 

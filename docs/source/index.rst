@@ -10,9 +10,9 @@ ae-datastore documentation
    :maxdepth: 2
    :caption: Contents:
 
-   services
-   application
-   cli
-   development
-   auth
+   index/overview
+   index/deployment
+   index/development
+
+
 

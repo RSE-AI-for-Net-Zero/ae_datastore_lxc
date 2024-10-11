@@ -1,5 +1,5 @@
 ===============
-Auth
+Authentication
 ===============
 
 .. toctree::
@@ -8,5 +8,7 @@ Auth
 
    auth/login
    auth/directory
-
+   auth/config
+   auth/ssl
+   auth/misc_notes
 

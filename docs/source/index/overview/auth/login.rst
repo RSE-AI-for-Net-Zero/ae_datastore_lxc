@@ -55,13 +55,11 @@ Workflow
 if validate on submit:
 - ``login_user(form.user)``
 - calls flask_login.login_user(form.user, False)
-  - sets ``session['_user_id']``, ``session['_fresh']`` and ``session['_id']``
-  - updates request context with user (``current_app.login_manager._update_request_context_with_user(user``)
-  - sends user_logged_in signal
-    
- 
+- sets ``session['_user_id']``, ``session['_fresh']`` and ``session['_id']``
+- updates request context with user (``current_app.login_manager._update_request_context_with_user(user``)
+- sends user_logged_in signal
 - security is trackable, so sets user login info
- - sends ``identity_changed`` signal
+- sends ``identity_changed`` signal
 - ``after_this_request``
 - get_post_login_redirect
 
