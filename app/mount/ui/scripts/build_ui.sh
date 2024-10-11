@@ -39,7 +39,9 @@ chmod 640 /etc/conf.d/secrets
 chgrp -R ae-datastore /opt/invenio/var
 chmod -R g+w /opt/invenio/var
 
-
+mkdir /opt/invenio/scripts
+cp /home/host/scripts/setup_services.sh /opt/invenio/scripts/
+chmod 400 /opt/invenio/scripts/setup_services.sh
 
 
 systemctl daemon-reload

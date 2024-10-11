@@ -8,7 +8,7 @@
 
 
 
-app/mount/skeleton/local_config.sh
+app/mount/skeleton/Pipfile.lock
 opensearch/mount/certs
 
 opensearch/private_noVCS/
