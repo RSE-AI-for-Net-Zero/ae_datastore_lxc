@@ -4,8 +4,6 @@
 **.key.pem
 **.srl
 **.bkp
-**invenio.cfg
-
 
 
 app/mount/skeleton/Pipfile.lock
