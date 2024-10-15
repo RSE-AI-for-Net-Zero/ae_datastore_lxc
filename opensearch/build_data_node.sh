@@ -18,6 +18,7 @@ LOG_MNT=$4  #"/home/leeb/.local/var/lxc/opensearch_1/log"
 
 export OPENSEARCH_VERSION='2.15.0'
 export GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
+export OPENSEARCH_INITIAL_ADMIN_PASSWORD='its_@_Secret123'
 
 echo $'\n'"lxc.mount.entry = ${PWD}/mount home/host none bind,create=dir 0 0"\
      $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/data none bind,create=dir 0 0"\

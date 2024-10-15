@@ -8,13 +8,12 @@ export PATH="/usr/share/opensearch/plugins/opensearch-security/tools/:${PATH}"
 rm -f /etc/opensearch/*.pem && \
     
 # copy our versions of config files and certs into /etc
+# See: https://opensearch.org/docs/latest/security/configuration/index/
 cp -R /home/host/config/data-node/* /etc/opensearch && \
     cp -R /home/host/ssl/* /etc/opensearch && \
     chown -R opensearch:opensearch /etc/opensearch && \
     chmod 644 /etc/opensearch/certs/* && \
     chmod 600 /etc/opensearch/keys/*
-
-# See: https://opensearch.org/docs/latest/security/configuration/index/
 
 
 # Set the password hashes for admin and ae-datastore users

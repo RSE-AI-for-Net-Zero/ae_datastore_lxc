@@ -141,6 +141,7 @@ plugins.security.ssl.http.pemcert_filepath: certs/node1.pem
 plugins.security.ssl.http.pemkey_filepath: keys/node1-key.pem
 plugins.security.ssl.http.pemtrustedcas_filepath: certs/root-ca.pem
 
+
 plugins.security.allow_default_init_securityindex: true
 
 plugins.security.authcz.admin_dn:
