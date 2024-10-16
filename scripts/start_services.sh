@@ -1,5 +1,5 @@
 #!/bin/bash
 
-for s in rabbitmq redis ae-datastore-ui ldap2_debian_bookworm_amd64
+for s in rabbitmq redis ae-datastore-app ldap
 do lxc-unpriv-start -n $s
 done
