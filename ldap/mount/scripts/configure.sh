@@ -59,7 +59,12 @@ echo """
 dn: cn=green,ou=Groups,ou=Local,dc=example,dc=com
 changetype: modify
 add: memberUid
-memberUid: = ['user_0', 'user_1', 'user_2', 'user_3', 'user_4', 'user_5']
+memberUid: user_0
+memberUid: user_1
+memberUid: user_2
+memberUid: user_3
+memberUid: user_4
+memberUid: user_5
 """ | ldapmodify -x -D 'cn=admin,dc=example,dc=com' -w ${LDAP_PASSWD} -H ldapi:///
 
 
@@ -67,14 +72,17 @@ echo """
 dn: cn=red,ou=Groups,ou=Local,dc=example,dc=com
 changetype: modify
 add: memberUid
-memberUid: = ['user_8', 'user_9']
+memberUid: user_8
+memberUid: user_9
 """ | ldapmodify -x -D 'cn=admin,dc=example,dc=com' -w ${LDAP_PASSWD} -H ldapi:///
 
 echo """
 dn: cn=blue,ou=Groups,ou=Local,dc=example,dc=com
 changetype: modify
 add: memberUid
-memberUid: = ['external_user_21', 'external_user_22', 'external_user_23']
+memberUid: external_user_21
+memberUid: external_user_22
+memberUid: external_user_23
 """ | ldapmodify -x -D 'cn=admin,dc=example,dc=com' -w ${LDAP_PASSWD} -H ldapi:///
 
 
