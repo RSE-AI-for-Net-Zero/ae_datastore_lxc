@@ -55,3 +55,8 @@ lxc_attach ()
 {
     systemd-run --user --scope -p "Delegate=yes" -- lxc-attach $@
 }
+
+lxc_copy ()
+{
+    systemd-run --user --scope -p "Delegate=yes" -- lxc-copy $@
+}

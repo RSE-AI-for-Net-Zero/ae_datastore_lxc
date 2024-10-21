@@ -1,21 +1,28 @@
-BASE_NAME=$1 #'base_debian_bookworm_amd64'
-FULL_NAME=${BASE_NAME}"-"$2
+APP_BASE_NAME=$1
+FULL_NAME="${APP_BASE_NAME}-app"
 
-source ../create_container.sh
-source ../secrets.sh
+lxc_copy -n ${APP_BASE_NAME} -N ${FULL_NAME} && \
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-copy -n ${BASE_NAME} -N ${FULL_NAME}
-systemd-run --user --scope -p "Delegate=yes" -- lxc-start -n ${FULL_NAME}
+    sed -ir '/^lxc.mount.entry.*home\/host/d' ${LXC_UNPRIV_DIR}/${FULL_NAME}/config && \
 
-echo "waiting for IP addr"
-sleep 1
+    echo "lxc.mount.entry = ${PREFIX}/services/app/ui home/host none bind,create=dir 0 0 " \
+	| tee -a ${LXC_UNPRIV_DIR}/${FULL_NAME}/config && \
 
-while ! container_has_ipv4 ${FULL_NAME} -i; do
-    echo "waiting for IP addr"
-    sleep 1
-done
+    lxc_start -n ${FULL_NAME} && \
 
-systemd-run --user --scope -p "Delegate=yes" -- lxc-attach -n ${FULL_NAME} --clear-env \
-	    --keep-var RABBIT_PASSWD \
-	    --keep-var OPENSEARCH_AEDATASTORE_PASSWD \
-	    -- /home/host/ui/scripts/build_ui.sh
+    echo "waiting for IP addr"; sleep 1
+    
+    while ! container_has_ipv4 ${FULL_NAME} -i; do
+	echo "waiting for IP addr"
+	sleep 1
+    done && \
+
+    lxc_attach -n ${FULL_NAME} --clear-env \
+	       -- /home/host/scripts/build_ui.sh ${RABBIT_PASSWD} \
+	       ${OPENSEARCH_AEDATASTORE_PASSWD} && \
+
+    lxc-stop -n ${FULL_NAME} && \
+
+    sed -ir '/^lxc.mount.entry.*home\/host/d' ${LXC_UNPRIV_DIR}/${FULL_NAME}/config
+
+
