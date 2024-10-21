@@ -14,16 +14,16 @@ echo """
 """ | tee -a /etc/bash.bashrc
 
 
-chown --recursive postgres:postgres /var/lib/postgres
+chown --recursive postgres:postgres /var/lib/postgresql
 
 # Drop default cluster
 pg_dropcluster --stop 15 main 
 
 # Initialise new cluster in mounted data dir
-pg_createcluster 15 ae_data -d /var/lib/postgres/data -- -E UTF-8
+pg_createcluster 15 ae_data -d /var/lib/postgresql/data -- -E UTF-8
 
 # Move config file to where cluster reads from
-cp /home/host/config/single-node/postgresql.conf /etc/postgresql/15/ae_data/
+cp /home/host/config/postgresql.conf /etc/postgresql/15/ae_data/
 
 # Make sure postgres usr owns the config
 chown postgres:postgres /etc/postgresql/15/ae_data/postgresql.conf

@@ -17,7 +17,7 @@ then
 echo $'\n'"lxc.mount.entry = ${MOUNT} home/host none bind,create=dir 0 0"\
      $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/data none bind,create=dir 0 0"\
      $'\n'"lxc.mount.entry = ${LOG_MNT} var/log/opensearch none bind,create=dir 0 0"\
-    | cat ${LXC_CONFIG} -\
+    | cat ${CONTAINER_CONFIG} -\
     | tee -a ${NAME}.conf
 else
     echo "Config file already exists, moving on"
@@ -38,9 +38,9 @@ create_container ${NAME} ${NAME}.conf && \
 	       /home/host/scripts/configure.sh ${OPENSEARCH_ADMIN_PASSWD} \
 	       ${OPENSEARCH_AEDATASTORE_PASSWD} && \
 
-    sed -ir '/^lxc.mount.entry.*home\/host/d' ${LXC_UNPRIV_DIR}/${NAME}/config && \
+    lxc-stop -n ${NAME} && \
 
-    lxc-stop -n ${NAME} && lxc_start -n ${NAME}
+    sed -ir '/^lxc.mount.entry.*home\/host/d' ${LXC_UNPRIV_DIR}/${NAME}/config
 
 
 

@@ -38,6 +38,13 @@ get_arch ()
     fi
 }
 
+container_exists ()
+{
+    NAME=$1
+
+    lxc-ls --fancy | grep ${NAME} > /dev/null
+}
+
 # Necessary because unpriviledged wrappers for lxc in raspbian don't seem to work
 lxc_start ()
 {
