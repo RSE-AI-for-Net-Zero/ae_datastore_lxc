@@ -45,6 +45,13 @@ then
     . ./lxc/scripts/rabbitmq/build.sh rdm-rabbitmq
 fi
 
+if (! container_exists rdm-redis ) || ${FORCE}
+then
+    # Builds container
+    # Unmounts build directory
+    . ./lxc/scripts/redis/build.sh rdm-redis
+fi
+
 
 
 
