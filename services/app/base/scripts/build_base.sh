@@ -2,6 +2,8 @@
 
 set -ex
 
+NODE_SUFFIX=$1
+
 apt-get update && apt-get install -y build-essential libssl-dev zlib1g-dev \
 libbz2-dev libreadline-dev libsqlite3-dev curl git libcairo2 \
 libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
@@ -31,12 +33,13 @@ pyenv install 3.9
 #Set global python version
 pyenv global 3.9
 
+
+
 # Install nodejs & npm
 NODE_VER='v20.9.0'
-NODE_SUFF=${NODE_SUFFIX:-"linux-x64.tar.xz"}
 
 NODE_DIR="https://nodejs.org/download/release/"${NODE_VER}"/"
-NODE_BASE="node-"${NODE_VER}"-"${NODE_SUFF}
+NODE_BASE="node-"${NODE_VER}"-"${NODE_SUFFIX}
 cd /tmp &&
     curl ${NODE_DIR}${NODE_BASE} --output ${NODE_BASE} &&
     curl ${NODE_DIR}/"SHASUMS256.txt" --output "SHASUMS256.txt" && \
@@ -54,6 +57,7 @@ cp --recursive ${NODE_BASE}/bin/* /usr/local/bin && \
 cp --recursive ${NODE_BASE}/lib/* /usr/local/lib  && \
 cp --recursive ${NODE_BASE}/include/* /usr/local/include && \
 cp --recursive ${NODE_BASE}/share/* /usr/local/share
+
 
 WORKING_DIR=/opt/invenio
 WORKING_DIR_SRC=${WORKING_DIR}/src
@@ -123,6 +127,7 @@ cp --recursive assets/* ${INVENIO_INSTANCE_PATH}/assets
 ## invenio-cli then goes and symlinks ./assets/* to their corresponding files in <instance_path/assets
 ##  Why?  Not sure yet.
 pipenv run ae-datastore webpack build
+
 # Remove pipenv
 pip uninstall -y pipenv --root-user-action ignore
 

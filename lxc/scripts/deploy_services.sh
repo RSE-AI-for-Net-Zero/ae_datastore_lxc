@@ -17,41 +17,52 @@ export LXC_REL
 export LXC_ARCH
 export LXCBR0_IP
 export LXC_UNPRIV_DIR
+export NODE_SUFFIX
 
 if ( ! container_exists rdm-opensearch-data-1 ) || ${FORCE}
 then
-    # Mount data directory under var/opensearch/data
-    # Mount log directory under var/log/opensearch
-    # Builds container
-    # Unmounts build directory
+    # Mount data directory
+    # Mount log directory
+    # Build container
+    # Unmount build directory
     . ./lxc/scripts/opensearch/build_data_node.sh rdm-opensearch-data-1 \
-      ${OPENSEARCH_DATA_MOUNT} \
-      ${OPENSEARCH_LOG_MOUNT}
+      ${OPENSEARCH_DATA_MOUNT} ${OPENSEARCH_LOG_MOUNT}
 fi
 
 if ( ! container_exists rdm-postgresql-1 ) || ${FORCE}
 then
     # Set lxc.signal.stop = SIGTERM
-    # Mount data directory under var/lib/postgresql/data
-    # Builds container
-    # Unmounts build directory
+    # Mount data directory
+    # Build container
+    # Unmount build directory
     . ./lxc/scripts/postgresql/build.sh rdm-postgresql-1 ${POSTGRESQL_DATA_MOUNT}
 fi
 
-if (! container_exists rdm-rabbitmq ) || ${FORCE}
+if ( ! container_exists rdm-rabbitmq ) || ${FORCE}
 then
-    # Builds container
-    # Unmounts build directory
+    # Build container
+    # Unmount build directory
     . ./lxc/scripts/rabbitmq/build.sh rdm-rabbitmq
 fi
 
-if (! container_exists rdm-redis ) || ${FORCE}
+if ( ! container_exists rdm-redis ) || ${FORCE}
 then
-    # Builds container
-    # Unmounts build directory
+    # Build container
+    # Unmount build directory
     . ./lxc/scripts/redis/build.sh rdm-redis
 fi
 
+if ( ! container_exists test-ae-datastore ) || ${FORCE}
+then
+    # Build container
+    # Mount data directory
+    # Mount log directory
+    # Unmount build directory
+    # TO DO: set correct container-stop signal
+    . ./lxc/scripts/app/build_base_container.sh test-ae-datastore \
+      ${AE_DATASTORE_DATA_MOUNT} ${AE_DATASTORE_LOG_MOUNT}
+      
+fi
 
 
 

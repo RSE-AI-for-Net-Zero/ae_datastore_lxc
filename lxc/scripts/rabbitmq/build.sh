@@ -16,7 +16,7 @@ create_container ${NAME} ${NAME}.conf && \
     
     lxc_start -n ${NAME} && \
     
-    lxc_attach -n ${NAME} --clear-env\
+    lxc_attach -n ${NAME} --clear-env \
 	       -- /home/host/scripts/build.sh ${RABBIT_PASSWD} && \
 
     lxc-stop -n ${NAME} && \
