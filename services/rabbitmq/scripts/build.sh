@@ -5,6 +5,8 @@ set -eux
 apt-get update &&\
     apt-get install -y --no-install-recommends rabbitmq-server
 
+
+RABBIT_PASSWD=$1
 ##################################################################
 #/etc/default/rabbitmq-server
 #/etc/rabbitmq/rabbitmq-env.conf

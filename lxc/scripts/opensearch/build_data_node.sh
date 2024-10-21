@@ -14,11 +14,11 @@ MOUNT="${PREFIX}/services/opensearch/data-node"
 
 if [ ! -f ${NAME}.conf ]
 then
-echo $'\n'"lxc.mount.entry = ${MOUNT} home/host none bind,create=dir 0 0"\
-     $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/data none bind,create=dir 0 0"\
-     $'\n'"lxc.mount.entry = ${LOG_MNT} var/log/opensearch none bind,create=dir 0 0"\
-    | cat ${CONTAINER_CONFIG} -\
-    | tee -a ${NAME}.conf
+    echo $'\n'"lxc.mount.entry = ${MOUNT} home/host none bind,create=dir 0 0"\
+	 $'\n'"lxc.mount.entry = ${DATA_MNT} var/opensearch/data none bind,create=dir 0 0"\
+	 $'\n'"lxc.mount.entry = ${LOG_MNT} var/log/opensearch none bind,create=dir 0 0"\
+	| cat ${CONTAINER_CONFIG} -\
+	| tee -a ${NAME}.conf
 else
     echo "Config file already exists, moving on"
 fi
