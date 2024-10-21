@@ -1,3 +1,7 @@
+export OPENSEARCH_INITIAL_ADMIN_PASSWORD=$1
+OPENSEARCH_VERSION=$2
+GPG_SIGNATURE=$3
+
 set -eux
 
 apt-get update && \

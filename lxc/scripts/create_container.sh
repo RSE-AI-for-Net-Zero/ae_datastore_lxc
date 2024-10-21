@@ -1,8 +1,4 @@
-DISTR="debian"
-RELEA="bookworm"
-ARCHE="amd64"
-
-LXCBR0_IP="10.0.3.1"
+set -u # Fail on unset variables
 
 am_i_root ()
 {
@@ -19,7 +15,8 @@ create_container ()
     FULL_NAME=$1
     #"_"${DISTR}"_"${RELEA}"_"${ARCHE}
     CONFIG=$2
-    lxc-create -n $FULL_NAME -t download -f ${CONFIG} -- -d ${DISTR} -r ${RELEA} -a ${ARCHE}
+    lxc-create -n $FULL_NAME -t download -f ${CONFIG} -- \
+               -d ${LXC_DIST} -r ${LXC_REL} -a ${LXC_ARCH}
 }
 
 container_has_ipv4 ()
@@ -41,4 +38,13 @@ get_arch ()
     fi
 }
 
+# Necessary because unpriviledged wrappers for lxc in raspbian don't seem to work
+lxc_start ()
+{
+    systemd-run --user --scope -p "Delegate=yes" -- lxc-start $@
+}
 
+lxc_attach ()
+{
+    systemd-run --user --scope -p "Delegate=yes" -- lxc-attach $@
+}

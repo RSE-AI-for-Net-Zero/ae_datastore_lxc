@@ -13,5 +13,8 @@ opensearch/private_noVCS/
 .venv/
 
 docs/build
-**/secrets.sh
+
+/scripts/secrets.sh
+/ssl/**
+/lxc/build.conf
 

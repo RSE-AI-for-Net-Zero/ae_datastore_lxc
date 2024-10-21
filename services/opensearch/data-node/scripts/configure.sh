@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eux
 
+OPENSEARCH_ADMIN_PASSWD=$1
+OPENSEARCH_AEDATASTORE_PASSWD=$2
+
 export OPENSEARCH_JAVA_HOME=/usr/share/opensearch/jdk
 export PATH="/usr/share/opensearch/plugins/opensearch-security/tools/:${PATH}"
 
@@ -9,7 +12,7 @@ rm -f /etc/opensearch/*.pem && \
     
 # copy our versions of config files and certs into /etc
 # See: https://opensearch.org/docs/latest/security/configuration/index/
-cp -R /home/host/config/data-node/* /etc/opensearch && \
+cp -R /home/host/config/* /etc/opensearch && \
     cp -R /home/host/ssl/* /etc/opensearch && \
     chown -R opensearch:opensearch /etc/opensearch && \
     chmod 644 /etc/opensearch/certs/* && \
@@ -19,7 +22,7 @@ cp -R /home/host/config/data-node/* /etc/opensearch && \
 # Set the password hashes for admin and ae-datastore users
 ADMIN_HASH=$(hash.sh -p ${OPENSEARCH_ADMIN_PASSWD})
 AEDS_HASH=$(hash.sh -p ${OPENSEARCH_AEDATASTORE_PASSWD})
-INTUSERS=/home/host/config/data-node/opensearch-security/internal_users.yml
+INTUSERS=/etc/opensearch/opensearch-security/internal_users.yml
 TMPUSERS=/tmp/internal_users.yml
 # See https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
 #  for how to deal with replacement strings containing characters sed considers special in
