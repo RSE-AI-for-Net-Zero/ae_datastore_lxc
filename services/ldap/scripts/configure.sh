@@ -1,5 +1,7 @@
 #!/bin/bash
 
+LDAP_PASSWD=$1
+
 cp -R /home/host/config /tmp
 
 ldapadd -x -D 'cn=admin,dc=example,dc=com' -H ldapi:/// -w ${LDAP_PASSWD} \

@@ -21,6 +21,9 @@ create_container ${NAME} ${NAME}.conf && \
     lxc_attach -n ${NAME} --clear-env \
 	       -- /home/host/scripts/build_node.sh && \
 
+    lxc_attach -n ${NAME} --clear-env \
+	       -- /home/host/scripts/add_trusted_host.sh ae-datastore-app && \
+
     lxc-stop -n ${NAME} && \
 	
     sed -ir '/^lxc.mount.entry.*home\/host/d' ${LXC_UNPRIV_DIR}/${NAME}/config

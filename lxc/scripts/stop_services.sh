@@ -1,5 +1,8 @@
 #!/bin/bash
 
-for s in rabbitmq redis ae-datastore-app ldap
-do lxc-stop  -n $s
+source ./lxc/scripts/create_container.sh
+
+for s in rdm-rabbitmq rdm-redis ae-datastore-app rdm-opensearch-data-1 rdm-postgresql-1
+do
+    lxc-stop -n $s
 done

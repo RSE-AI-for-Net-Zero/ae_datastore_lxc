@@ -16,5 +16,5 @@ docs/build
 
 /scripts/secrets.sh
 /ssl/**
-/lxc/build.conf
+
 

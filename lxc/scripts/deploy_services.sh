@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # BEFORE this script:
-#   SSL certs & keys are in ./ssl
+#   SSL certs & keys are in ./ssl/certs ./ssl/keys
+#   UID 0 inside container has rw permissions for data and log volumes
 
 source ./lxc/build.conf
 source ./lxc/scripts/create_container.sh
@@ -19,9 +20,9 @@ export LXCBR0_IP
 export LXC_UNPRIV_DIR
 export NODE_SUFFIX
 
-APP_BASE_NAME=test-ae-datastore
+APP_BASE_NAME=ae-datastore
 
-
+     
 if ( ! container_exists rdm-opensearch-data-1 ) || ${FORCE}
 then
     # Mount data directory
@@ -67,7 +68,6 @@ then
       
 fi
 
-
 if ( ! container_exists "${APP_BASE_NAME}-app" ) || ${FORCE}
 then
     # Copy base container
@@ -77,6 +77,36 @@ then
     # Unmount ui build directory
     . ./lxc/scripts/app/build_ui_container.sh ${APP_BASE_NAME}
 fi
+
+# Containers can resolve hostnames: rdm-redis, etc.
+# - add some-container,10.0.3.101 ---> /etc/lxc/dnsmasq-hosts.conf
+# - add dhcp-hostsfile=/etc/lxc/dnsmasq-hosts.conf ---> /etc/lxc/dnsmasq.conf
+# - add LXC_DHCP_CONFILE=/etc/lxc/dnsmasq.conf ---> /etc/default/lxc
+# - sudo rm /var/lib/misc/<dnsmasq.lease.file> (or delete any existing leases for rel. containers)
+# - sudo systemctl restart lxc-net
+
+
+# ae-datastore-app added as trusted host for postgresql container(s)
+# export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+# RABBIT and OS passwords in environ
+# source /opt/invenio/scripts/setup_services.sh
+# _cleanup
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

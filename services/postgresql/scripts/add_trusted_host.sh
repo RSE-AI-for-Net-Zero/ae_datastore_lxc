@@ -14,6 +14,6 @@ if ! grep -Fxq "${LINE}" /etc/postgresql/15/ae_data/pg_hba.conf; then
     echo "${LINE}" | tee -a /etc/postgresql/15/ae_data/pg_hba.conf
 fi
 
-su postgres -c 'pg_ctlcluster 15 ae_data start'
+pg_ctlcluster 15 ae_data restart
 
 

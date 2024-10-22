@@ -1,5 +1,7 @@
 #!/bin/bash
 
+LDAP_PASSWD=$1
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update && apt-get -y install slapd
