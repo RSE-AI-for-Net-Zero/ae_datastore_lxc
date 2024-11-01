@@ -30,7 +30,8 @@ then
     # Build container
     # Unmount build directory
     . ./lxc/scripts/opensearch/build_data_node.sh rdm-opensearch-data-1 \
-      ${OPENSEARCH_DATA_MOUNT} ${OPENSEARCH_LOG_MOUNT}
+         ${OPENSEARCH_DATA_MOUNT} ${OPENSEARCH_LOG_MOUNT}
+    
 fi
 
 if ( ! container_exists rdm-postgresql-1 ) || ${FORCE}
@@ -40,6 +41,7 @@ then
     # Build container
     # Unmount build directory
     . ./lxc/scripts/postgresql/build.sh rdm-postgresql-1 ${POSTGRESQL_DATA_MOUNT}
+    
 fi
 
 if ( ! container_exists rdm-rabbitmq ) || ${FORCE}
@@ -85,13 +87,18 @@ fi
 # - sudo rm /var/lib/misc/<dnsmasq.lease.file> (or delete any existing leases for rel. containers)
 # - sudo systemctl restart lxc-net
 
-
 # ae-datastore-app added as trusted host for postgresql container(s)
-# export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
-# RABBIT and OS passwords in environ
-# source /opt/invenio/scripts/setup_services.sh
-# _cleanup
-# 
+
+# Set up services
+# Inside ae-datastore-app
+# $ source /etc/conf.d/secrets
+# $ export RABBIT_PASSWD
+# $ export OPENSEARCH_AEDATASTORE_PASSWD
+# $ export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+# $ source /opt/invenio/scripts/setup_services.sh
+# $ _cleanup
+# $ _setup
+# $ fixtures
 
 
 
