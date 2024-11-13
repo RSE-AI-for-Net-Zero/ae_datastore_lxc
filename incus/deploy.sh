@@ -100,7 +100,10 @@ ${CMD} exec --cwd / rdm-rabbitmq -- /home/host/scripts/build.sh ${RABBIT_PASSWD}
 ${CMD} file delete -f rdm-rabbitmq/home/host/
 
 # Postgresql
-echo "Set lxc.signal.stop = SIGTERM"
+# It says here https://linuxcontainers.org/incus/docs/main/api-extensions/
+#  that SIGTERM is forwarded.
+# Postgresql has three modes of shutdown - the most graceful is on SIGTERM when all pending
+# transactions are completed (and no new ones accepted) before shutdown.
 echo "Bind mount data volume at /var/lib/postgres/data"
 incus launch images:$image rdm-postgresql-1
 incus file push -r postgresql rdm-postgresql-1/root/
