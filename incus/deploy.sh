@@ -63,8 +63,8 @@ Logs -> /var/log/opensearch
 OPENSEARCH_VERSION='2.15.0'
 GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
 
-${CMD} launch images:$image rdm-opensearch-d1
 cp -R ${SSL_PATH} ${PREFIX}/services/opensearch/data-node
+${CMD} launch images:$image rdm-opensearch-d1
 ${CMD} file create -p rdm-opensearch-d1/home/host/
 ${CMD} file create -p rdm-opensearch-d1/var/opensearch/data/
 ${CMD} file create -p rdm-opensearch-d1/var/log/opensearch/
@@ -104,19 +104,24 @@ ${CMD} file delete -f rdm-rabbitmq/home/host/
 #  that SIGTERM is forwarded.
 # Postgresql has three modes of shutdown - the most graceful is on SIGTERM when all pending
 # transactions are completed (and no new ones accepted) before shutdown.
-echo "Bind mount data volume at /var/lib/postgres/data"
-incus launch images:$image rdm-postgresql-1
-incus file push -r postgresql rdm-postgresql-1/root/
-incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./build_node.sh
-incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./add_trusted_host.sh rdm-uwsgi-ui
-incus exec --cwd /root/postgresql/scripts rdm-postgresql-1 -- ./add_trusted_host.sh rdm-uwsgi-api
-incus file pull -r rdm-postgresql-d1/root/postgresql /tmp
+echo "Bind mount data volume at /var/lib/postgres/data/"
+${CMD} launch images:$image rdm-postgresql-1
+${CMD} file create -p rdm-postgresql-1/home/host/
+${CMD} file create -p rdm-postgresql-1/var/lib/postgres/data/
+${CMD} config device add rdm-postgresql-1 external-data disk \
+      source=/home/leeb/.local/var/lxc/postgresql_1/data path=/var/lib/postgres/data
+${CMD} file push -r ${PREFIX}/services/postgresql/* rdm-postgresql-1/home/host
+${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/build_node.sh
+#${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/add_trusted_host.sh rdm-uwsgi-ui
+#${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/add_trusted_host.sh rdm-uwsgi-api
+${CMD} file delete -f rdm-postgresql-d1/home/host/
 
 # Redis
-incus launch images:$image rdm-redis
-incus file push -r redis rdm-redis/root/
-incus exec --cwd /root/redis rdm-redis -- ./build.sh
-incus file pull -r rdm-redis/root/redis /tmp
+${CMD} launch images:$image rdm-redis
+${CMD} file create -p rdm-redis/home/host/
+${CMD} file push -r ${PREFIX}/services/redis/* rdm-redis/home/host
+${CMD} exec --cwd / rdm-redis -- /home/host/scripts/build.sh
+${CMD} file delete -f rdm-redis/home/host/
 
 
 
