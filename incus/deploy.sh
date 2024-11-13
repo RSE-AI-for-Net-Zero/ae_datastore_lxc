@@ -72,19 +72,15 @@ ${CMD} config device add rdm-opensearch-d1 external-data disk \
       source=/home/leeb/.local/var/lxc/opensearch_d1/data path=/var/opensearch/data
 ${CMD} config device add rdm-opensearch-d1 external-log disk \
       source=/home/leeb/.local/var/lxc/opensearch_d1/log path=/var/log/opensearch
-${CMD} file push -r ${PREFIX}/services/opensearch/data-node rdm-opensearch-d1/home/host
+${CMD} file push -r ${PREFIX}/services/opensearch/data-node/* rdm-opensearch-d1/home/host
 ${CMD} exec --cwd / rdm-opensearch-d1 \
-      -- /home/host/data-node/scripts/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
+      -- /home/host/scripts/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
       ${OPENSEARCH_VERSION} \
       ${GPG_SIGNATURE}
 ${CMD} exec --cwd / rdm-opensearch-d1 \
-      -- /home/host/data-node/scripts/configure.sh ${OPENSEARCH_ADMIN_PASSWD} \
+      -- /home/host/scripts/configure.sh ${OPENSEARCH_ADMIN_PASSWD} \
       ${OPENSEARCH_AEDATASTORE_PASSWD}
-# We now should remove the build scripts and config from the container
-#  in LXC terms you would remove the bind mount at /home/host by deleting
-#  the relevant lxc.mount.entry from the container's config file.
-#
-
+${CMD} file delete -f rdm-opensearch-d1/home/host/
 # A quick test that admin & user passwords set ok and that ae-datastore
 #  can create and destroy an index
 #
@@ -97,10 +93,11 @@ ${CMD} exec --cwd / rdm-opensearch-d1 \
 
 
 # RabbitMQ
-incus launch images:$image rdm-rabbitmq
-incus file push -r ${PREFIX}/services/rabbitmq rdm-rabbitmq/root/
-incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_PASSWD}
-incus file pull -r rdm-rabbitmq/root/rabbitmq /tmp
+${CMD} launch images:$image rdm-rabbitmq
+${CMD} file create -p rdm-rabbitmq/home/host/
+${CMD} file push -r ${PREFIX}/services/rabbitmq/* rdm-rabbitmq/home/host
+${CMD} exec --cwd / rdm-rabbitmq -- /home/host/scripts/build.sh ${RABBIT_PASSWD}
+${CMD} file delete -f rdm-rabbitmq/home/host/
 
 # Postgresql
 echo "Set lxc.signal.stop = SIGTERM"
