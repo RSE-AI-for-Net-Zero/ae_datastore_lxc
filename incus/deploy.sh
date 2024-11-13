@@ -5,7 +5,8 @@ set -eux
 image="debian/12"
 
 PREFIX="/home/leeb/Projects/ae_datastore_lxc"
-CMD=${INCUS_CMD:-incus} #in case we're doing "sudo incus"
+CMD=${INCUS_CMD:-"incus"} #in case we're doing "sudo incus"
+NODE_SUFF=${NODE_SUFFIX:-"linux-x64.tar.xz"}
 
 # Configuration
 # =============
@@ -91,7 +92,6 @@ ${CMD} file delete -f rdm-opensearch-d1/home/host/
 # curl -k -X PUT -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
 # curl -k -X DELETE -u 'ae-datastore:<ae-ds-psswd>' https://rdm-opensearch-d1:9200/doggos
 
-
 # RabbitMQ
 ${CMD} launch images:$image rdm-rabbitmq
 ${CMD} file create -p rdm-rabbitmq/home/host/
@@ -101,20 +101,25 @@ ${CMD} file delete -f rdm-rabbitmq/home/host/
 
 # Postgresql
 # It says here https://linuxcontainers.org/incus/docs/main/api-extensions/
-#  that SIGTERM is forwarded.
-# Postgresql has three modes of shutdown - the most graceful is on SIGTERM when all pending
-# transactions are completed (and no new ones accepted) before shutdown.
-echo "Bind mount data volume at /var/lib/postgres/data/"
+#  that SIGTERM is "forwarded", whatever this means
+# Tried sudo kill -s SIGTERM <rdm-postgresql-1 PID> but it carries on regardless
+# 
+# Postgresql has three modes of shutdown - the most graceful is on receiving SIGTERM
+# All pending transactions are completed (and no new ones accepted) before shutdown.
+#
+# For bare LXC, we just add lxc.signal.stop = SIGTERM to the container's config
+# 
 ${CMD} launch images:$image rdm-postgresql-1
 ${CMD} file create -p rdm-postgresql-1/home/host/
 ${CMD} file create -p rdm-postgresql-1/var/lib/postgres/data/
 ${CMD} config device add rdm-postgresql-1 external-data disk \
-      source=/home/leeb/.local/var/lxc/postgresql_1/data path=/var/lib/postgres/data
+      source=/home/leeb/.local/var/lxc/postgresql_1/data path=/var/lib/postgresql/data
 ${CMD} file push -r ${PREFIX}/services/postgresql/* rdm-postgresql-1/home/host
 ${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/build_node.sh
-#${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/add_trusted_host.sh rdm-uwsgi-ui
-#${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/add_trusted_host.sh rdm-uwsgi-api
-${CMD} file delete -f rdm-postgresql-d1/home/host/
+${CMD} exec --cwd / rdm-postgresql-1 -- cp /home/host/scripts/add_trusted_host.sh /usr/local/bin
+${CMD} exec --cwd / rdm-postgresql-1 -- add_trusted_host.sh rdm-invenio-ui
+${CMD} exec --cwd / rdm-postgresql-1 -- add_trusted_host.sh rdm-invenio-api
+${CMD} file delete -f rdm-postgresql-1/home/host/
 
 # Redis
 ${CMD} launch images:$image rdm-redis
@@ -122,6 +127,23 @@ ${CMD} file create -p rdm-redis/home/host/
 ${CMD} file push -r ${PREFIX}/services/redis/* rdm-redis/home/host
 ${CMD} exec --cwd / rdm-redis -- /home/host/scripts/build.sh
 ${CMD} file delete -f rdm-redis/home/host/
+
+# invenio-base
+${CMD} launch images:$image rdm-base
+${CMD} file create -p rdm-base/home/host/
+${CMD} file create -p rdm-base/opt/invenio/var/instance/data/
+${CMD} file create -p rdm-base/opt/invenio/var/instance/log/
+${CMD} config device add rdm-base external-data disk \
+       source=/home/leeb/.local/var/lxc/ae-datastore/data path=/opt/invenio/var/instance/data
+${CMD} config device add rdm-base external-log disk \
+       source=/home/leeb/.local/var/lxc/ae-datastore/log path=/opt/invenio/var/instance/log
+${CMD} file push -r ${PREFIX}/services/app/base/* rdm-base/home/host
+${CMD} exec --cwd / rdm-base -- /home/host/scripts/build_base.sh ${NODE_SUFF}
+${CMD} file delete -f rdm-base/home/host/
+${CMD} stop rdm-base
+
+# invenio-ui
+${CMD} copy rdm-base rdm-invenio-ui
 
 
 
