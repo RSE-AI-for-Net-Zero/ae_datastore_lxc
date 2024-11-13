@@ -5,12 +5,13 @@ set -eux
 image="debian/12"
 
 PREFIX="/home/leeb/Projects/ae_datastore_lxc"
+CMD=${INCUS_CMD:-incus} #in case we're doing "sudo incus"
 
 # Configuration
 # =============
 # Load secrets if available
-if [ -f secrets.sh ]; then
-	source secrets.sh	# **/secrets.sh ignored by git
+if [ -f ${PREFIX}/scripts/secrets.sh ]; then
+	source ${PREFIX}/scripts/secrets.sh	# **/secrets.sh ignored by git
 fi
 
 if [ -z ${RABBIT_USER} ]; then
@@ -31,6 +32,7 @@ if [ -z ${OPENSEARCH_AEDATASTORE_PASSWD} ]; then
 	read -p "Enter new opensearch admin password: " \
 		OPENSEARCH_INITIAL_ADMIN_PASSWORD
 fi
+
 
 
 # OpenSearch SSL Certificate generation
@@ -54,21 +56,30 @@ bash ${PREFIX}/scripts/create_self_signed_ssl_certs.sh  ${SSL_PATH}
 
 # OpenSearch
 echo """
-Bind mounts:
+Bind mounts: 
 Data -> /var/opensearch/data
 Logs -> /var/log/opensearch
 """
 OPENSEARCH_VERSION='2.15.0'
 GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
 
-incus launch images:$image rdm-opensearch-d1
+${CMD} launch images:$image rdm-opensearch-d1
 cp -R ${SSL_PATH} ${PREFIX}/services/opensearch/data-node
-incus file push -r ${PREFIX}/services/opensearch/data-node rdm-opensearch-d1/home/host
-incus exec --cwd / rdm-opensearch-d1 \
-      -- /home/host/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} ${OPENSEARCH_VERSION} \
+${CMD} file create -p rdm-opensearch-d1/home/host/
+${CMD} file create -p rdm-opensearch-d1/var/opensearch/data/
+${CMD} file create -p rdm-opensearch-d1/var/log/opensearch/
+${CMD} config device add rdm-opensearch-d1 external-data disk \
+      source=/home/leeb/.local/var/lxc/opensearch_d1/data path=/var/opensearch/data
+${CMD} config device add rdm-opensearch-d1 external-log disk \
+      source=/home/leeb/.local/var/lxc/opensearch_d1/log path=/var/log/opensearch
+${CMD} file push -r ${PREFIX}/services/opensearch/data-node rdm-opensearch-d1/home/host
+${CMD} exec --cwd / rdm-opensearch-d1 \
+      -- /home/host/data-node/scripts/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
+      ${OPENSEARCH_VERSION} \
       ${GPG_SIGNATURE}
-incus exec --cwd / rdm-opensearch-d1 \
-      -- /home/host/configure.sh ${OPENSEARCH_ADMIN_PASSWD} ${OPENSEARCH_AEDATASTORE_PASSWD}
+${CMD} exec --cwd / rdm-opensearch-d1 \
+      -- /home/host/data-node/scripts/configure.sh ${OPENSEARCH_ADMIN_PASSWD} \
+      ${OPENSEARCH_AEDATASTORE_PASSWD}
 # We now should remove the build scripts and config from the container
 #  in LXC terms you would remove the bind mount at /home/host by deleting
 #  the relevant lxc.mount.entry from the container's config file.
