@@ -144,6 +144,11 @@ ${CMD} stop rdm-base
 
 # invenio-ui
 ${CMD} copy rdm-base rdm-invenio-ui
+${CMD} start rdm-invenio-ui
+${CMD} file create -p rdm-invenio-ui/home/host/
+${CMD} file push -r ${PREFIX}/services/app/ui/* rdm-invenio-ui/home/host
+${CMD} exec --cwd / rdm-invenio-ui -- /home/host/scripts/build_ui.sh \
+       ${RABBIT_PASSWD} ${OPENSEARCH_AEDATASTORE_PASSWD}
 
 
 
