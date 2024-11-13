@@ -59,92 +59,36 @@ So, what is flask-resources?  Firstly, what version do we have?::
   Flask-Security-Invenio      3.1.4
   ...
 
-From the docs, it provides blueprint factories that can be parameterised via config, e.g., ``names``.  Let's now figure out where this blueprint is created::
+From the docs, it provides blueprint factories that can be parameterised via config, e.g., ``names``.  Let's now figure out where this blueprint is created.  We'll search ``site-packages`` for modules that import from ``flask_resources``, filter out the rubbish then search what remains for occurrences of "``names``"::
 
   (src) $: cd /opt/invenio/src/.venv/lib/.../site-packages
   (src) $: grep -rlFZ 'flask_resources' * \
            | grep -vzE "(__pycache__)|(flask_resources)|(dist-info/)" \
 	   | xargs -0 grep -nl 'names'
 
-        ...
+
+	invenio_app_rdm/config.py
 	invenio_vocabularies/contrib/names/resources.py
-	...
 
 
-The class ``NamesResource`` is defined in the package ``invenio_vocabularies`` and inherits from ``.names.record_type`` - a product of ``RecordTypeFactory`` defined in ``invenio-records-resources``.
+``invenio_vocabularies/contrib/names/resources.py`` defines two classes: ``NamesResource`` and ``NamesResourceConfig`` that each inherit from classes created by the factory function ``RecordTypeFactory`` defined in ``invenio_records_resources.factories.factory``.
 
-::
+``NamesResource`` inherits directly from ``NameResource`` - one of the classes created using ``RecordTypeFactory`` - which in turn is::
 
-   record_type = RecordTypeFactory(
-   	"Name",
-	# Data layer
-	pid_field_kwargs={
-		"create": False,
-		"provider": PIDProviderFactory.create(
-			pid_type="names", base_cls=RecordIdProviderV2
-		),
-		"context_cls": BaseVocabularyPIDFieldContext,
-	},
-	schema_version="1.0.0",
-	schema_path="local://names/name-v1.0.0.json",
-	record_relations=name_relations,
-	record_dumper=SearchDumper(
-		extensions=[
-			RelationDumperExt("relations"),
-			IndexedAtDumperExt(),
-		]
-	),
-	# Service layer
-	service_id="names",
-	service_schema=NameSchema,
-	search_options=NamesSearchOptions,
-	service_components=service_components,
-	permission_policy_cls=PermissionPolicy,
-	# Resource layer
-	endpoint_route="/names",
-	)
+  class NameResource(RecordResource):
+  	pass
+
+  ...
+
+  class RecordResource(ErrorHandlersMixin, Resource):
+  	...
+
+``Resource`` is defined in ``flask-resources``
 
 
-``RecordTypeFactory``
------------------------------------------------
-
-``create_record_type()`` dynamically creates the following classes with equivalent static definitions
-
-- ``NameMetadata`` (``create_metadata_model()``)::
-
-    instance.model_cls = class NameMetadata(db.Model, RecordMetadataBase):
-			    	__tablename__ = name_metadata
-
-- ``Name`` (in ``self.create_record_class()``)::
-
-    instance.record_cls = class Name(invenio_records_resources.records.api.Record):
-    				model_cls = NameMetadata
-				schema = ...
-				index = ...
-				pid = ...
-				dumper = ...
-				relations = \
-				  invenio_vocabularies.contrib.names.name_relations
-
-- ``NameResourceConfig`` and ``NameResource`` (in ``create_resource_class()``)::
-
-    instance.resource_config_cls =\
-    
-    	class NameResourceConfig(invenio_records_resources.RecordResourceConfig):
-    		blueprint_name = "name"
-		url_prefix = "/names"
-    
-    class NameResource(invenio_records_resources.RecordResource):
-    	pass
-
-- ``NameServiceConfig``, ``NameService`` (in ``create_service_class()``)::
-
-    To do
 
 
-``NameResource`` inherits from ``RecordResource``, which inherits from ``flask_resources.Resource``, which is very interesting.
-
-Look at ``invenio_vocabularies.ext`` For
+Looking at ``invenio-vocabularies``, for each of
 
 - ``Affliations``
 - ``Awards``
@@ -152,29 +96,24 @@ Look at ``invenio_vocabularies.ext`` For
 - ``Names``
 - ``Subjects``
 
-there correspond the classes
+there correspond four classes
 
-- ``*Resource`` ( |right arrow| ``RecordResource``)
-- ``*ResourceConfig`` (|right arrow| ``RecordResourceConfig``)
-- ``*Service`` (|right arrow| ``RecordService``)
-- ``*ServiceConfig`` (|right arrow| ``RecordServiceConfig``)
+- ``*Resource``
+- ``*ResourceConfig``
+- ``*Service``
+- ``*ServiceConfig``
 
+``*Resource`` and ``*ResourceConfig``
+-------------------------------------
 
-and ``invenio_vocabularies.views``.
+To do
+
+``*Service`` and ``*ServiceConfig``
+-------------------------------------
+
+To do
+
+.. image:: /images/vocab_classes.drawio.png
 
 .. |right arrow| unicode:: U+2192
-    	
-  
-	
-
-
-
-	
-
-
-
-
-
-
-
 

@@ -4,6 +4,8 @@ set -eux
 
 image="debian/12"
 
+PREFIX="/home/leeb/Projects/ae_datastore_lxc"
+
 # Configuration
 # =============
 # Load secrets if available
@@ -44,9 +46,10 @@ fi
 # To view a cert:
 # openssl x509 -in node1.pem -text -noout
 
-CFG_PATH=opensearch/config/ssl
+SSL_PATH=${PREFIX}/ssl
+mkdir -p ${SSL_PATH}/certs ${SSL_PATH}/keys
 
-bash ../opensearch/create_self_signed_ssl_certs.sh ${CFG_PATH}
+bash ${PREFIX}/scripts/create_self_signed_ssl_certs.sh  ${SSL_PATH}
 ### DEPLOY CONTAINERS ###
 
 # OpenSearch
@@ -59,17 +62,18 @@ OPENSEARCH_VERSION='2.15.0'
 GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
 
 incus launch images:$image rdm-opensearch-d1
-incus file push -r opensearch rdm-opensearch-d1/root/
-incus exec --cwd /root/opensearch/scripts/data-node/ rdm-opensearch-d1 \
-      -- ./build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} ${OPENSEARCH_VERSION} ${GPG_SIGNATURE}
-incus exec --cwd /root/opensearch/scripts/data-node/ rdm-opensearch-d1 \
-      -- ./configure.sh ${OPENSEARCH_ADMIN_PASSWD} ${OPENSEARCH_AEDATASTORE_PASSWD}
+cp -R ${SSL_PATH} ${PREFIX}/services/opensearch/data-node
+incus file push -r ${PREFIX}/services/opensearch/data-node rdm-opensearch-d1/home/host
+incus exec --cwd / rdm-opensearch-d1 \
+      -- /home/host/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} ${OPENSEARCH_VERSION} \
+      ${GPG_SIGNATURE}
+incus exec --cwd / rdm-opensearch-d1 \
+      -- /home/host/configure.sh ${OPENSEARCH_ADMIN_PASSWD} ${OPENSEARCH_AEDATASTORE_PASSWD}
 # We now should remove the build scripts and config from the container
 #  in LXC terms you would remove the bind mount at /home/host by deleting
 #  the relevant lxc.mount.entry from the container's config file.
 #
-# Note this line is repeated for the other builds below
-incus file pull -r rdm-opensearch-d1/root/opensearch /tmp
+
 # A quick test that admin & user passwords set ok and that ae-datastore
 #  can create and destroy an index
 #
@@ -83,7 +87,7 @@ incus file pull -r rdm-opensearch-d1/root/opensearch /tmp
 
 # RabbitMQ
 incus launch images:$image rdm-rabbitmq
-incus file push -r rabbitmq rdm-rabbitmq/root/
+incus file push -r ${PREFIX}/services/rabbitmq rdm-rabbitmq/root/
 incus exec --cwd /root/rabbitmq rdm-rabbitmq -- ./build.sh ${RABBIT_PASSWD}
 incus file pull -r rdm-rabbitmq/root/rabbitmq /tmp
 
