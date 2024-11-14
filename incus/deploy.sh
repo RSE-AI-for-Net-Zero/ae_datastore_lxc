@@ -126,6 +126,7 @@ ${CMD} launch images:$image rdm-redis
 ${CMD} file create -p rdm-redis/home/host/
 ${CMD} file push -r ${PREFIX}/services/redis/* rdm-redis/home/host
 ${CMD} exec --cwd / rdm-redis -- /home/host/scripts/build.sh
+${CMD} exec --cwd / rdm-redis -- /home/host/scripts/configure.sh
 ${CMD} file delete -f rdm-redis/home/host/
 
 # invenio-base
@@ -150,5 +151,29 @@ ${CMD} file push -r ${PREFIX}/services/app/ui/* rdm-invenio-ui/home/host
 ${CMD} exec --cwd / rdm-invenio-ui -- /home/host/scripts/build_ui.sh \
        ${RABBIT_PASSWD} ${OPENSEARCH_AEDATASTORE_PASSWD}
 
+
+# Even though I can ping rdm-invenio-ui from inside rdm-postgresql-1, and rdm-invenio-ui(-api) are
+#  added as trusted hosts for postgresql, I'm still getting errors sending requests to the db instance
+#  from inside the app container.  Therefore, this monstrosity...
+
+${CMD} list -c n46 -f compact | \
+    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-ui)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\2\t\1/p" | \
+    tee /tmp/hosts
+
+${CMD} list -c n46 -f compact | \
+    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\2\t\1/p" | \
+    tee -a /tmp/hosts
+
+${CMD} list -c n46 -f compact | \
+    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-ui)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\3\t\1/p" | \
+    tee -a /tmp/hosts
+
+${CMD} list -c n46 -f compact | \
+    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\3\t\1/p" | \
+    tee -a /tmp/hosts
+
+${CMD} file push -r /tmp/hosts rdm-postgresql-1/root
+${CMD} exec --cwd /root rdm-postgresql-1 -- /bin/bash -c 'cat hosts | tee -a /etc/hosts'
+ 
 
 
