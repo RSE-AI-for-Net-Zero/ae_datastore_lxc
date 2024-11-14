@@ -12,7 +12,7 @@ POSTGRESQL_1_MNT=${POSTGRESQL_1_MNT:-"/home/leeb/.local/var/lxc/postgresql_1"}
 AEDATASTORE_MNT=${AEDATASTORE_MNT:-"/home/leeb/.local/var/lxc/ae-datastore"}
 
 
-mkdir -p ${OPENSEARCH_D1_MNT}/{data,log} ${POSTGRESQL_1_MNT}/data ${AEDATASTORE_MTN}/{data,log}
+mkdir -p ${OPENSEARCH_D1_MNT}/{data,log} ${POSTGRESQL_1_MNT}/data ${AEDATASTORE_MNT}/{data,log}
 # Make sure that root user inside containers has sufficient permissions for these directories
 
 # Configuration
