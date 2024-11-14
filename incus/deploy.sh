@@ -7,6 +7,13 @@ image="debian/12"
 PREFIX="/home/leeb/Projects/ae_datastore_lxc"
 CMD=${INCUS_CMD:-"incus"} #in case we're doing "sudo incus"
 NODE_SUFF=${NODE_SUFFIX:-"linux-x64.tar.xz"}
+OPENSEARCH_D1_MNT=${OPENSEARCH_D1_MNT:-"/home/leeb/.local/var/lxc/opensearch_d1"}
+POSTGRESQL_1_MNT=${POSTGRESQL_1_MNT:-"/home/leeb/.local/var/lxc/postgresql_1"}
+AEDATASTORE_MNT=${AEDATASTORE_MNT:-"/home/leeb/.local/var/lxc/ae-datastore"}
+
+
+mkdir -p ${OPENSEARCH_D1_MNT}/{data,log} ${POSTGRESQL_1_MNT}/data ${AEDATASTORE_MTN}/{data,log}
+# Make sure that root user inside containers has sufficient permissions for these directories
 
 # Configuration
 # =============
@@ -70,9 +77,9 @@ ${CMD} file create -p rdm-opensearch-d1/home/host/
 ${CMD} file create -p rdm-opensearch-d1/var/opensearch/data/
 ${CMD} file create -p rdm-opensearch-d1/var/log/opensearch/
 ${CMD} config device add rdm-opensearch-d1 external-data disk \
-      source=/home/leeb/.local/var/lxc/opensearch_d1/data path=/var/opensearch/data
+      source=${OPENSEARCH_D1_MNT}/data path=/var/opensearch/data
 ${CMD} config device add rdm-opensearch-d1 external-log disk \
-      source=/home/leeb/.local/var/lxc/opensearch_d1/log path=/var/log/opensearch
+      source=${OPENSEARCH_D1_MNT}/log path=/var/log/opensearch
 ${CMD} file push -r ${PREFIX}/services/opensearch/data-node/* rdm-opensearch-d1/home/host
 ${CMD} exec --cwd / rdm-opensearch-d1 \
       -- /home/host/scripts/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
@@ -113,7 +120,7 @@ ${CMD} launch images:$image rdm-postgresql-1
 ${CMD} file create -p rdm-postgresql-1/home/host/
 ${CMD} file create -p rdm-postgresql-1/var/lib/postgres/data/
 ${CMD} config device add rdm-postgresql-1 external-data disk \
-      source=/home/leeb/.local/var/lxc/postgresql_1/data path=/var/lib/postgresql/data
+      source=${POSTGRESQL_1_MNT}/data path=/var/lib/postgresql/data
 ${CMD} file push -r ${PREFIX}/services/postgresql/* rdm-postgresql-1/home/host
 ${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/build_node.sh
 ${CMD} exec --cwd / rdm-postgresql-1 -- cp /home/host/scripts/add_trusted_host.sh /usr/local/bin
@@ -135,9 +142,9 @@ ${CMD} file create -p rdm-base/home/host/
 ${CMD} file create -p rdm-base/opt/invenio/var/instance/data/
 ${CMD} file create -p rdm-base/opt/invenio/var/instance/log/
 ${CMD} config device add rdm-base external-data disk \
-       source=/home/leeb/.local/var/lxc/ae-datastore/data path=/opt/invenio/var/instance/data
+       source=${AEDATASTORE_MNT}/data path=/opt/invenio/var/instance/data
 ${CMD} config device add rdm-base external-log disk \
-       source=/home/leeb/.local/var/lxc/ae-datastore/log path=/opt/invenio/var/instance/log
+       source=${AEDATASTORE_MNT}/log path=/opt/invenio/var/instance/log
 ${CMD} file push -r ${PREFIX}/services/app/base/* rdm-base/home/host
 ${CMD} exec --cwd / rdm-base -- /home/host/scripts/build_base.sh ${NODE_SUFF}
 ${CMD} file delete -f rdm-base/home/host/
