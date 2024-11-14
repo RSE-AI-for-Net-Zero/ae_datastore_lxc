@@ -179,6 +179,7 @@ ${CMD} exec --cwd /root rdm-postgresql-1 -- /bin/bash -c 'cat hosts | tee -a /et
 
 
 ${CMD} exec --cwd / rdm-invenio-ui -- /bin/bash -c 'export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance;. /etc/conf.d/secrets;export RABBIT_PASSWD; export OPENSEARCH_AEDATASTORE_PASSWD;. /opt/invenio/scripts/setup_services.sh;_cleanup;_setup;fixtures'
+${CMD} file delete -f rdm-invenio-ui/home/host
 
 
 
