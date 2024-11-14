@@ -154,26 +154,33 @@ ${CMD} exec --cwd / rdm-invenio-ui -- /home/host/scripts/build_ui.sh \
 
 # Even though I can ping rdm-invenio-ui from inside rdm-postgresql-1, and rdm-invenio-ui(-api) are
 #  added as trusted hosts for postgresql, I'm still getting errors sending requests to the db instance
-#  from inside the app container.  Therefore, this monstrosity...
+#  from inside the app container.  Therefore, let's drag the ip4 AND ip6 address of the two app containers (ip6 seems necessary) out of incus and add them to pg's /etc/hosts
 
 ${CMD} list -c n46 -f compact | \
     sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-ui)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\2\t\1/p" | \
     tee /tmp/hosts
 
 ${CMD} list -c n46 -f compact | \
-    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\2\t\1/p" | \
-    tee -a /tmp/hosts
-
-${CMD} list -c n46 -f compact | \
     sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-ui)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\3\t\1/p" | \
     tee -a /tmp/hosts
 
-${CMD} list -c n46 -f compact | \
-    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\3\t\1/p" | \
-    tee -a /tmp/hosts
+# Uncomment these when we have a need for rdm-invenio-api
+#${CMD} list -c n46 -f compact | \
+#    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\3\t\1/p" | \
+#    tee -a /tmp/hosts
+
+#${CMD} list -c n46 -f compact | \
+#    sed -rn "/^\s*rdm-\S+\s+\S+.*$/ s/^\s*(rdm-invenio-api)\s+(\S+)\s+\(eth0\)\s+(\S+).*$/\2\t\1/p" | \
+#    tee -a /tmp/hosts
+
 
 ${CMD} file push -r /tmp/hosts rdm-postgresql-1/root
 ${CMD} exec --cwd /root rdm-postgresql-1 -- /bin/bash -c 'cat hosts | tee -a /etc/hosts'
- 
+
+
+${CMD} exec --cwd / rdm-invenio-ui -- /bin/bash -c 'export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance;. /etc/conf.d/secrets;export RABBIT_PASSWD; export OPENSEARCH_AEDATASTORE_PASSWD;. /opt/invenio/scripts/setup_services.sh;_cleanup;_setup;fixtures'
+
+
+
 
 
