@@ -47,7 +47,8 @@ mkdir /opt/invenio/scripts
 cp /home/host/scripts/setup_services.sh /opt/invenio/scripts/
 chmod 400 /opt/invenio/scripts/setup_services.sh
 
-chown celery:celery /opt/invenio/src/.venv/bin/celery
+chmod -R 755 /opt /opt/invenio
+
 
 systemctl daemon-reload
 systemctl enable celery.service celerybeat.service app.service
