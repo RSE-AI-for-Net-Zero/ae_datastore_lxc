@@ -185,6 +185,11 @@ ${CMD} file push -r /tmp/hosts rdm-postgresql-1/root
 ${CMD} exec --cwd /root rdm-postgresql-1 -- /bin/bash -c 'cat hosts | tee -a /etc/hosts'
 
 
+# Initialise db, search indices, admin user, fixtures, etc.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !! NOTE - THIS IS DESTRUCTIVE - will drop existing db, indices, etc. !!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ${CMD} exec --cwd / rdm-invenio-ui -- /bin/bash -c 'export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance;. /etc/conf.d/secrets;export RABBIT_PASSWD; export OPENSEARCH_AEDATASTORE_PASSWD;. /opt/invenio/scripts/setup_services.sh;_cleanup;_setup;fixtures'
 ${CMD} file delete -f rdm-invenio-ui/home/host
 
