@@ -10,5 +10,6 @@ Services
    services/rabbitmq
    services/postgres
    services/redis
+   services/base
 
 

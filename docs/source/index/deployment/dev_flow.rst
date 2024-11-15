@@ -63,7 +63,7 @@ Create unpriviledged copies of ``ae-datastore`` container for UI and API uWSGI i
 
 The build script inside the container then:
    - creates ``celery`` and ``ae-datastore`` users
-   - creates ``secrets`` and adds ``celery`` and ``ae-datastore
+   - creates ``secrets`` and adds ``celery`` and ``ae-datastore``
    - creates directory structure for celery and celerybeat daemons
    - adds an entry to ``/etc/tmpfiles.d/`` so that the volatile ``/var/run/celery`` gets recreated on reboot
    - copies celery and uWSGI unit files, etc. into ``/etc``

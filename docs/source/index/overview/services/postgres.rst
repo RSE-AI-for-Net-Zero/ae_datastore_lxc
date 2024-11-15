@@ -1,3 +1,5 @@
+.. _postgresql_ref:
+
 ==============
 Postgresql
 ==============

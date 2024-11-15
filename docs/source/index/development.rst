@@ -13,3 +13,4 @@ Development
    development/invenio_rdm_modules
    development/upload
    development/metadata
+   development/records_resources
