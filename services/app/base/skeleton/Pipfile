@@ -13,7 +13,7 @@ uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 entry-point-util = {git = "https://github.com/AI-for-Net-Zero/entry-point-util.git"}
 invenio-factory-patch = {ref = "dev", git = "https://github.com/AI-for-Net-Zero/invenio-factory-patch.git"}
-invenio-ldapclient = {ref = "login_workflow", git = "https://github.com/AI-for-Net-Zero/invenio-ldapclient.git"}
+invenio-ldapclient = {ref = "temporary_email_fix", git = "https://github.com/AI-for-Net-Zero/invenio-ldapclient.git"}
 
 [requires]
 python_version = "3.9"
