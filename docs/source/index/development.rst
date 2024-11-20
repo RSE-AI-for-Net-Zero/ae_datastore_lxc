@@ -14,3 +14,5 @@ Development
    development/upload
    development/metadata
    development/records_resources
+   development/cookbook
+   development/where_is_js_for_new_upload

@@ -25,4 +25,11 @@ formative-react
 - No dynamic dependencies
 
 
+alpaca forms
+^^^^^^^^^^^^
+
+jQuery based.
+Resolves remote dependencies
+
+
 
