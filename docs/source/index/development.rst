@@ -15,4 +15,6 @@ Development
    development/metadata
    development/records_resources
    development/cookbook
-   development/where_is_js_for_new_upload
+   development/hacking_js_new_upload
+   development/log_warnings
+   development/ldapclient
