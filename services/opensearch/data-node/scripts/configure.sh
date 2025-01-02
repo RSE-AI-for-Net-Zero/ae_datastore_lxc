@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -ux
 
 OPENSEARCH_ADMIN_PASSWD=$1
 OPENSEARCH_AEDATASTORE_PASSWD=$2
@@ -12,8 +12,8 @@ rm -f /etc/opensearch/*.pem && \
     
 # copy our versions of config files and certs into /etc
 # See: https://opensearch.org/docs/latest/security/configuration/index/
-cp -R /home/host/config/* /etc/opensearch && \
-    cp -R /home/host/ssl/* /etc/opensearch && \
+cp -R /root/host/config/* /etc/opensearch && \
+    cp -R /root/host/ssl/* /etc/opensearch && \
     chown -R opensearch:opensearch /etc/opensearch && \
     chmod 644 /etc/opensearch/certs/* && \
     chmod 600 /etc/opensearch/keys/*

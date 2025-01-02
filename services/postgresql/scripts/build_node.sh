@@ -23,7 +23,7 @@ pg_dropcluster --stop 15 main
 pg_createcluster 15 ae_data -d /var/lib/postgresql/data -- -E UTF-8
 
 # Move config file to where cluster reads from
-cp /home/host/config/postgresql.conf /etc/postgresql/15/ae_data/
+cp /root/host/config/postgresql.conf /etc/postgresql/15/ae_data/
 
 # Make sure postgres usr owns the config
 chown postgres:postgres /etc/postgresql/15/ae_data/postgresql.conf
