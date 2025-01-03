@@ -11,8 +11,7 @@ invenio-app-rdm = {extras = ["postgresql", "opensearch2"], version = "~=11.0.0"}
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
-entry-point-util = {git = "https://github.com/AI-for-Net-Zero/entry-point-util.git"}
-invenio-factory-patch = {ref = "dev", git = "https://github.com/AI-for-Net-Zero/invenio-factory-patch.git"}
+invenio-factory-patch = {git = "https://github.com/AI-for-Net-Zero/invenio-factory-patch.git"}
 invenio-ldapclient = {ref = "temporary_email_fix", git = "https://github.com/AI-for-Net-Zero/invenio-ldapclient.git"}
 
 [requires]
