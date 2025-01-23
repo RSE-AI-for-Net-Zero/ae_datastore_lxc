@@ -38,7 +38,7 @@ create_container ${NAME} ${NAME}.conf
 lxc_start -n ${NAME} && \
 
     lxc_attach --clear-env -n ${NAME} \
-            -- /root/host/scripts/build_base.sh ${NODE_SUFFIX} && \
+            -- /root/host/scripts/build.sh ${NODE_SUFFIX} && \
 
     lxc-stop -n ${NAME} && \
 

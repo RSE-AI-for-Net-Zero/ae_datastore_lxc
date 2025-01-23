@@ -117,6 +117,9 @@ cp --recursive templates/ ${INVENIO_INSTANCE_PATH}/templates
 # 1.2.5 - copy templates/ app_data/
 cp --recursive app_data/ ${INVENIO_INSTANCE_PATH}/app_data
 
+export RABBIT_PASSWD="DUMMY123"
+export OPENSEARCH_AEDATASTORE_PASSWD="DUMMY123"
+
 # 1.2.6 - update_statics_and_assets(force=True, flask_env='production', log_file=None)
 pipenv run ae-datastore collect --verbose
 pipenv run ae-datastore webpack clean create
