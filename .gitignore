@@ -15,6 +15,7 @@ opensearch/private_noVCS/
 docs/build
 
 /scripts/secrets.sh
+/scripts/authorized_keys
 /ssl/**
 
 

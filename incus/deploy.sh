@@ -3,13 +3,16 @@
 set -eux
 
 image="debian/12"
+ip24="10.48.175"
+ip32start=20
 
-PREFIX="/home/leeb/Projects/ae_datastore_lxc"
+PREFIX=".."
+DATA_PREFIX="/storage/rdm-test"
 CMD=${INCUS_CMD:-"incus"} #in case we're doing "sudo incus"
 NODE_SUFF=${NODE_SUFFIX:-"linux-x64.tar.xz"}
-OPENSEARCH_D1_MNT=${OPENSEARCH_D1_MNT:-"/home/leeb/.local/var/lxc/opensearch_d1"}
-POSTGRESQL_1_MNT=${POSTGRESQL_1_MNT:-"/home/leeb/.local/var/lxc/postgresql_1"}
-AEDATASTORE_MNT=${AEDATASTORE_MNT:-"/home/leeb/.local/var/lxc/ae-datastore"}
+OPENSEARCH_D1_MNT=${OPENSEARCH_D1_MNT:-"$DATA_PREFIX/opensearch_d1"}
+POSTGRESQL_1_MNT=${POSTGRESQL_1_MNT:-"$DATA_PREFIX/postgresql_1"}
+AEDATASTORE_MNT=${AEDATASTORE_MNT:-"$DATA_PREFIX/ae-datastore"}
 
 
 mkdir -p ${OPENSEARCH_D1_MNT}/{data,log} ${POSTGRESQL_1_MNT}/data ${AEDATASTORE_MNT}/{data,log}
@@ -77,9 +80,11 @@ ${CMD} file create -p rdm-opensearch-d1/home/host/
 ${CMD} file create -p rdm-opensearch-d1/var/opensearch/data/
 ${CMD} file create -p rdm-opensearch-d1/var/log/opensearch/
 ${CMD} config device add rdm-opensearch-d1 external-data disk \
-      source=${OPENSEARCH_D1_MNT}/data path=/var/opensearch/data
+      source=${OPENSEARCH_D1_MNT}/data path=/var/opensearch/data \
+      shift=true
 ${CMD} config device add rdm-opensearch-d1 external-log disk \
-      source=${OPENSEARCH_D1_MNT}/log path=/var/log/opensearch
+      source=${OPENSEARCH_D1_MNT}/log path=/var/log/opensearch \
+      shift=true
 ${CMD} file push -r ${PREFIX}/services/opensearch/data-node/* rdm-opensearch-d1/home/host
 ${CMD} exec --cwd / rdm-opensearch-d1 \
       -- /home/host/scripts/build.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
@@ -88,7 +93,7 @@ ${CMD} exec --cwd / rdm-opensearch-d1 \
 ${CMD} exec --cwd / rdm-opensearch-d1 \
       -- /home/host/scripts/configure.sh ${OPENSEARCH_ADMIN_PASSWD} \
       ${OPENSEARCH_AEDATASTORE_PASSWD}
-${CMD} file delete -f rdm-opensearch-d1/home/host/
+#${CMD} file delete -f rdm-opensearch-d1/home/host/
 # A quick test that admin & user passwords set ok and that ae-datastore
 #  can create and destroy an index
 #
@@ -104,7 +109,7 @@ ${CMD} launch images:$image rdm-rabbitmq
 ${CMD} file create -p rdm-rabbitmq/home/host/
 ${CMD} file push -r ${PREFIX}/services/rabbitmq/* rdm-rabbitmq/home/host
 ${CMD} exec --cwd / rdm-rabbitmq -- /home/host/scripts/build.sh ${RABBIT_PASSWD}
-${CMD} file delete -f rdm-rabbitmq/home/host/
+#${CMD} file delete -f rdm-rabbitmq/home/host/
 
 # Postgresql
 # It says here https://linuxcontainers.org/incus/docs/main/api-extensions/
@@ -120,13 +125,14 @@ ${CMD} launch images:$image rdm-postgresql-1
 ${CMD} file create -p rdm-postgresql-1/home/host/
 ${CMD} file create -p rdm-postgresql-1/var/lib/postgres/data/
 ${CMD} config device add rdm-postgresql-1 external-data disk \
-      source=${POSTGRESQL_1_MNT}/data path=/var/lib/postgresql/data
+      source=${POSTGRESQL_1_MNT}/data path=/var/lib/postgresql/data \
+      shift=true
 ${CMD} file push -r ${PREFIX}/services/postgresql/* rdm-postgresql-1/home/host
 ${CMD} exec --cwd / rdm-postgresql-1 -- /home/host/scripts/build_node.sh
 ${CMD} exec --cwd / rdm-postgresql-1 -- cp /home/host/scripts/add_trusted_host.sh /usr/local/bin
 ${CMD} exec --cwd / rdm-postgresql-1 -- add_trusted_host.sh rdm-invenio-ui
 ${CMD} exec --cwd / rdm-postgresql-1 -- add_trusted_host.sh rdm-invenio-api
-${CMD} file delete -f rdm-postgresql-1/home/host/
+#${CMD} file delete -f rdm-postgresql-1/home/host/
 
 # Redis
 ${CMD} launch images:$image rdm-redis
@@ -134,7 +140,7 @@ ${CMD} file create -p rdm-redis/home/host/
 ${CMD} file push -r ${PREFIX}/services/redis/* rdm-redis/home/host
 ${CMD} exec --cwd / rdm-redis -- /home/host/scripts/build.sh
 ${CMD} exec --cwd / rdm-redis -- /home/host/scripts/configure.sh
-${CMD} file delete -f rdm-redis/home/host/
+#${CMD} file delete -f rdm-redis/home/host/
 
 # invenio-base
 ${CMD} launch images:$image rdm-base
@@ -142,12 +148,14 @@ ${CMD} file create -p rdm-base/home/host/
 ${CMD} file create -p rdm-base/opt/invenio/var/instance/data/
 ${CMD} file create -p rdm-base/opt/invenio/var/instance/log/
 ${CMD} config device add rdm-base external-data disk \
-       source=${AEDATASTORE_MNT}/data path=/opt/invenio/var/instance/data
+       source=${AEDATASTORE_MNT}/data path=/opt/invenio/var/instance/data \
+       shift=true
 ${CMD} config device add rdm-base external-log disk \
-       source=${AEDATASTORE_MNT}/log path=/opt/invenio/var/instance/log
+       source=${AEDATASTORE_MNT}/log path=/opt/invenio/var/instance/log \
+       shift=true
 ${CMD} file push -r ${PREFIX}/services/app/base/* rdm-base/home/host
 ${CMD} exec --cwd / rdm-base -- /home/host/scripts/build_base.sh ${NODE_SUFF}
-${CMD} file delete -f rdm-base/home/host/
+#${CMD} file delete -f rdm-base/home/host/
 ${CMD} stop rdm-base
 
 # invenio-ui
@@ -191,9 +199,16 @@ ${CMD} exec --cwd /root rdm-postgresql-1 -- /bin/bash -c 'cat hosts | tee -a /et
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ${CMD} exec --cwd / rdm-invenio-ui -- /bin/bash -c 'export INVENIO_INSTANCE_PATH=/opt/invenio/var/instance;. /etc/conf.d/secrets;export RABBIT_PASSWD; export OPENSEARCH_AEDATASTORE_PASSWD;. /opt/invenio/scripts/setup_services.sh;_cleanup;_setup;fixtures'
-${CMD} file delete -f rdm-invenio-ui/home/host
+#${CMD} file delete -f rdm-invenio-ui/home/host
 
 
 
-
+for x in rdm-opensearch-d1 rdm-postgresql-1 rdm-rabbitmq rdm-redis rdm-invenio-ui; do
+	${CMD} config device override $x eth0
+	${CMD} config device set $x eth0 ipv4.address $ip24.$((ip32start++))
+	${CMD} exec --cwd / $x -- /bin/bash -c 'apt install openssh-server'
+	${CMD} file create -p $x/root/.ssh
+	${CMD} file push ${PREFIX}/scripts/authorized_keys \
+		$x/root/.ssh/
+done
 
