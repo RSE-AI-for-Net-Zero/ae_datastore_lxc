@@ -1,6 +1,6 @@
 NAME=$1 #ae-datastore
-DATA_MNT=$2 #/home/leeb/.local/var/lxc/ae-datastore/data
-LOG_MNT=$3 #/home/leeb/.local/var/lxc/ae-datastore/log
+DATA_MNT=${AE_DATASTORE_DATA_MOUNT} #/home/leeb/.local/var/lxc/ae-datastore/data
+LOG_MNT=${AE_DATASTORE_LOG_MOUNT} #/home/leeb/.local/var/lxc/ae-datastore/log
 
 ########################################################################################
 # Set permission for local file storage directory
@@ -23,7 +23,7 @@ MOUNT="${PREFIX}/services/app/base"
 
 if [ ! -f ${NAME}.conf ]
 then
-    echo $'\n'"lxc.mount.entry = ${MOUNT} home/host none bind,create=dir 0 0"\
+    echo $'\n'"lxc.mount.entry = ${MOUNT} root/host none bind,create=dir 0 0"\
 	 $'\n'"lxc.mount.entry = ${DATA_MNT} opt/invenio/var/instance/data none bind,create=dir 0 0"\
 	 $'\n'"lxc.mount.entry = ${LOG_MNT} opt/invenio/var/instance/log none bind,create=dir 0 0"\
         | cat ${CONTAINER_CONFIG} -\
@@ -33,12 +33,12 @@ else
 fi
 
 
-create_container ${NAME} ${NAME}.conf && \
+create_container ${NAME} ${NAME}.conf
     
-    lxc_start -n ${NAME} && \
+lxc_start -n ${NAME} && \
 
     lxc_attach --clear-env -n ${NAME} \
-            -- /home/host/scripts/build_base.sh ${NODE_SUFFIX} && \
+            -- /root/host/scripts/build.sh ${NODE_SUFFIX} && \
 
     lxc-stop -n ${NAME} && \
 

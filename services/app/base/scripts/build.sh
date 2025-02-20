@@ -71,7 +71,7 @@ mkdir -p ${WORKING_DIR_SRC} \
 
 mkdir -p /etc/conf.d
 
-cp --recursive /home/host/skeleton/* ${WORKING_DIR_SRC}
+cp --recursive /root/host/skeleton/* ${WORKING_DIR_SRC}
 
 
 
@@ -109,13 +109,16 @@ pipenv sync
 
 # 1.2.2 - update_instance_path - only affects config - pass
 # 1.2.3 - copy invenio.cfg
-cp ${PWD}/invenio.cfg ${INVENIO_INSTANCE_PATH}/invenio.cfg
+cp invenio.cfg invenio_factory_patch_ui.cfg ${INVENIO_INSTANCE_PATH}
 
 # 1.2.4 - copy templates/
-cp --recursive ${PWD}/templates/ ${INVENIO_INSTANCE_PATH}/templates
+cp --recursive templates/ ${INVENIO_INSTANCE_PATH}/templates
 
 # 1.2.5 - copy templates/ app_data/
-cp --recursive ${PWD}/app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+cp --recursive app_data/ ${INVENIO_INSTANCE_PATH}/app_data
+
+export RABBIT_PASSWD="DUMMY123"
+export OPENSEARCH_AEDATASTORE_PASSWD="DUMMY123"
 
 # 1.2.6 - update_statics_and_assets(force=True, flask_env='production', log_file=None)
 pipenv run ae-datastore collect --verbose
