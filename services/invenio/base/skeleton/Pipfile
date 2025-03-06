@@ -15,7 +15,7 @@ uwsgi-tools = ">=1.1.1"
 invenio-factory-patch = {ref = "RDMv12-sandbox", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-factory-patch.git"}
 invenio-rdm-domain-records = {ref = "main", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-rdm-domain-records.git"}
 ae-datastore-schemas = {git = "https://github.com/RSE-AI-for-Net-Zero/ae-datastore-schemas.git"}
-invenio-ldapclient = {ref = "v12-templates", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-ldapclient.git"}
+invenio-ldapclient = {ref = "Imperial_Aeronautics", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-ldapclient.git"}
 
 [requires]
 python_version = "3.9"
