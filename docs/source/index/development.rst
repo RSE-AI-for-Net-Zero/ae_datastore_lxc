@@ -18,3 +18,4 @@ Development
    development/hacking_js_new_upload
    development/log_warnings
    development/ldapclient
+   development/theme
