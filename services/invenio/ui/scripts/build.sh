@@ -29,7 +29,7 @@ mkdir -p /var/run/celery /var/log/celery /opt/celery/var
 touch /etc/tmpfiles.d/celery.conf
 echo "d /var/run/celery 0755 celery celery" | tee /etc/tmpfiles.d/celery.conf
 
-cp --recursive /home/host/config/* /
+cp --recursive /root/host/config/* /
 
 chown --recursive celery:celery /var/log/celery /var/run/celery /opt/celery
 
@@ -44,7 +44,7 @@ chmod -R g+w /opt/invenio/var
 
 mkdir /opt/invenio/scripts
 
-cp /home/host/scripts/setup_services.sh /opt/invenio/scripts/
+cp /root/host/scripts/setup_services.sh /opt/invenio/scripts/
 chmod 400 /opt/invenio/scripts/setup_services.sh
 
 chmod -R 755 /opt /opt/invenio
