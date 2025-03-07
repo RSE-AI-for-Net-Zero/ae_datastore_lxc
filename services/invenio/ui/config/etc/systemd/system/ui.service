@@ -10,7 +10,7 @@ Group=ae-datastore
 EnvironmentFile=/etc/conf.d/celery
 EnvironmentFile=/etc/conf.d/secrets
 WorkingDirectory=/opt/invenio/var
-ExecStart=/opt/invenio/src/.venv/bin/uwsgi --ini /etc/uwsgi.ini
+ExecStart=/opt/invenio/src/.venv/bin/uwsgi --ini /etc/uwsgi_ui.ini
 
 [Install]
 WantedBy=multi-user.target
