@@ -131,6 +131,8 @@ pipenv run ae-datastore webpack build
 # Remove pipenv
 pip uninstall -y pipenv --root-user-action ignore
 
+# Get base build stuff out of the way
+mv root/host/skeleton/ root/host/scripts/ root/host/base/
 
 
 

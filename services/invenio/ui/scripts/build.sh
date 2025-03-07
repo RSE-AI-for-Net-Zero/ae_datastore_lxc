@@ -51,5 +51,5 @@ chmod -R 755 /opt /opt/invenio
 
 
 systemctl daemon-reload
-systemctl enable celery.service celerybeat.service app.service
-systemctl start celery.service celerybeat.service app.service
+systemctl enable celery.service celerybeat.service ui.service
+systemctl start celery.service celerybeat.service ui.service
