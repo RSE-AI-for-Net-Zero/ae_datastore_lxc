@@ -1,0 +1,16 @@
+# https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-22-04
+
+[Unit]
+Description=uWSGI instance to serve AE Datastore API
+After=network.target
+
+[Service]
+User=ae-datastore
+Group=ae-datastore
+EnvironmentFile=/etc/conf.d/celery
+EnvironmentFile=/etc/conf.d/secrets
+WorkingDirectory=/opt/invenio/var
+ExecStart=/opt/invenio/src/.venv/bin/uwsgi --ini /etc/uwsgi_api.ini
+
+[Install]
+WantedBy=multi-user.target
