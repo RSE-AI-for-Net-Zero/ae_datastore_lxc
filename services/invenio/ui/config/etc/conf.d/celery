@@ -9,7 +9,7 @@ CELERYD_NODES="w1 w2 w3"
 CELERY_BIN="/opt/invenio/src/.venv/bin/celery"
 
 # App instance to use
-CELERY_APP="invenio_factory_patch.celery"
+CELERY_APP="invenio_factory_patch.celery_ui"
 
 # How to call manage.py
 CELERYD_MULTI="multi"

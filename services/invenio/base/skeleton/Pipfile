@@ -12,7 +12,7 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 
-invenio-factory-patch = {ref = "RDMv12-prod", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-factory-patch.git"}
+invenio-factory-patch = {ref = "celery", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-factory-patch.git"}
 invenio-rdm-domain-records = {ref = "main", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-rdm-domain-records.git"}
 ae-datastore-schemas = {git = "https://github.com/RSE-AI-for-Net-Zero/ae-datastore-schemas.git"}
 invenio-ldapclient = {ref = "Imperial_Aeronautics", git = "https://github.com/RSE-AI-for-Net-Zero/invenio-ldapclient.git"}

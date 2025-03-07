@@ -42,10 +42,9 @@ chmod 640 /etc/conf.d/secrets
 chgrp -R ae-datastore /opt/invenio/var
 chmod -R g+w /opt/invenio/var
 
-mkdir /opt/invenio/scripts
-
-cp /root/host/scripts/setup_services.sh /opt/invenio/scripts/
-chmod 400 /opt/invenio/scripts/setup_services.sh
+#mkdir /opt/invenio/scripts
+#cp /root/host/scripts/setup_services.sh /opt/invenio/scripts/
+#chmod 400 /opt/invenio/scripts/setup_services.sh
 
 chmod -R 755 /opt /opt/invenio
 
