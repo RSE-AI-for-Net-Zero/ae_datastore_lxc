@@ -15,9 +15,11 @@ invenio-role:
     - "manage_aliases"
     - "manage"
     - 'indices:data/read/scroll/clear'
+    - 'indices:admin/template/put'
   cluster_permissions:
     - 'indices:data/read/scroll/clear'
     - 'cluster:monitor/main'
+    - 'indices:admin/template/put'
 
 # Restrict users so they can only view visualization and dashboard on OpenSearchDashboards
 kibana_read_only:
