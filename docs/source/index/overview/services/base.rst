@@ -46,5 +46,25 @@ Celery log files
 ::
 
    cat /var/log/celery/w1.log
+
+
+change session key and add to secrets file
+
+::
+
+   chown root:ae-datastore /opt/invenio/var/instance/log/ae-datastore.app.log
+   chmod -R g+w /opt/invenio/var/instance/{log,data}
+
+
+For dev instance, set the following two config keys in `rdm-invenio-{api,ui}-*`
+   
+::
+
+   SITE_UI_URL = "https://data.ae.ic.ac.uk/dev"
+   SITE_API_URL = "https://data.ae.ic.ac.uk/dev/api"
+
+Then restart::
+
+  systemctl {api,ui}.service
   
 

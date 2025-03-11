@@ -145,10 +145,29 @@ Clean up::
 
 
 
+To check it all worked::
+
+    curl -k -u "ae-datastore:${OPENSEARCH_AEDATASTORE_USER_PASSWD}" https://localhost:9200
+    curl -k -u "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWD}" https://localhost:9200
+
 How to change passwords
 -----------------------
 
+Create hash of new password::
 
+  NEW_PASSWD="..."
+  ./host/scripts/hash_passwd.sh ${NEW_PASSWD}
+
+copy and paste into ``/etc/opensearch/opensearch-security/internal_users.yml`` then run::
+
+  ./root/host/scripts/reconfigure.sh
+
+cluster and allowed-actions for invenio-role
+- 'indices:admin/template/put'
+
+
+
+  
 
   
 
