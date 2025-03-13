@@ -167,7 +167,7 @@ cluster and allowed-actions for invenio-role
 
 
 
-  
+The reason why we needed the extra templates put permission was because we upgraded from v10 to v12.  Issue didn's show up in sandbox because all permissions are open.
 
   
 
