@@ -6,7 +6,14 @@ Development
    :maxdepth: 2
    :caption: Contents:
 
+   development/ui	     
    development/factory
+   development/rest
+   development/cli
+   development/auth
+   development/tasks
+
+
    development/inspecting_auth
    development/entry_point_groups
    development/what_does_this_API_call_do

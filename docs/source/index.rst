@@ -12,6 +12,7 @@ ae-datastore documentation
    :caption: Contents:
 
    index/overview
+   index/services
    index/deployment
    index/development
 
