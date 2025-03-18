@@ -79,7 +79,7 @@ Check log file in rdm-postgresql-1-dev::
       forward lookup not checked.
 
 
-.. image:: /images/second_deployment.drawio.png
+
   
 
 
