@@ -8,6 +8,9 @@ Summary
 Topology
 --------
 
+[!ToDo!] Make note about SSL termination
+[!ToDo!] SESSION_COOKIE_SECURE (warning) - secure headers
+
 .. figure:: /images/second_deployment.drawio.png
 
    Containers and services in current deployment.  See legend below.
