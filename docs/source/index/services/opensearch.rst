@@ -169,6 +169,9 @@ cluster and allowed-actions for invenio-role
 
 The reason why we needed the extra templates put permission was because we upgraded from v10 to v12.  Issue didn's show up in sandbox because all permissions are open.
 
+note about backing up search indices in v12 and later
+https://inveniordm.docs.cern.ch/develop/howtos/backup_search_indices/
+
   
 
   

@@ -35,6 +35,7 @@ Set secrets::
 
    RABBITMQ_PASSWD="..."
    OPENSEARCH_AEDATASTORE_USER_PASSWD="..."
+   SECRET_KEY="..."
    
    mv root/host/ui/* root/host/
    cd /
@@ -67,4 +68,26 @@ Then restart::
 
   systemctl {api,ui}.service
   
+in `.bashrc`
+------------
+::
 
+   export INVENIO_INSTANCE_PATH="/opt/invenio/var/instance
+
+  
+I updated a package
+-------------------
+
+For each service:
+
+stopped service
+activated venv
+pip uninstall
+pip install
+restart service
+
+To do
+-----
+
+Choose better passwords
+Export passwords from secrets file in .bashrc
