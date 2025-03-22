@@ -34,6 +34,7 @@ cp --recursive /root/host/config/* /
 chown --recursive celery:celery /var/log/celery /var/run/celery /opt/celery
 
 echo $'\n'"RABBIT_PASSWD=\"${RABBIT_PASSWD}\""\
+     $'\n'"SECRET_KEY=\"${SECRET_KEY}\""\
      $'\n'"OPENSEARCH_AEDATASTORE_PASSWD=\"${OPENSEARCH_AEDATASTORE_PASSWD}\""$'\n' |\
     tee  /etc/conf.d/secrets
 
