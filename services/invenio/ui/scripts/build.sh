@@ -11,6 +11,7 @@ set -ex
 
 RABBIT_PASSWD=$1
 OPENSEARCH_AEDATASTORE_PASSWD=$2
+SECRET_KEY=$3
 
 useradd celery --shell '/bin/sh' --system --no-create-home
 useradd ae-datastore --shell '/bin/sh' --system --no-create-home

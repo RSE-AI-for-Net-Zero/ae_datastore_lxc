@@ -3,7 +3,7 @@
 set -eux
 
 # copy our versions of config files and certs into /etc
-cp --recursive /home/host/config/data-node/opensearch-security/* /etc/opensearch/opensearch-security/ && \
+cp --recursive /root/host/config/data-node/opensearch-security/* /etc/opensearch/opensearch-security/ && \
 chown --recursive opensearch:opensearch /etc/opensearch /var/opensearch/data \
 	  /var/opensearch/log
 
