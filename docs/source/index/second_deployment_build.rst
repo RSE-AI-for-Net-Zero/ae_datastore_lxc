@@ -11,7 +11,7 @@ Each deployment requires building the following containers based on a Debian Boo
 - `rdm-invenio-ui`
 - `rdm-invenio-api`
 
-Required external filesystem mounts are described in Section :ref:`topology_ref`.
+[!ToDo!] List external filesystem mounts.
   
 1. Build `rdm-redis`
 ^^^^^^^^^^^^^^^^^^^^
@@ -263,6 +263,12 @@ Run the build script::
    ./root/host/scripts/build.sh ${RABBITMQ_PASSWD} \
 	${OPENSEARCH_AEDATASTORE_USER_PASSWD} \
 	${SECRET_KEY}
+
+Add the following lines to :file:`/root/.bashrc` in both containers - these export the secrets on opening a new shell so that the cmd line *ae-datastore* can be invoked::
+
+  set -a
+  source /etc/conf.d/secrets
+  set +a
 
 Make sure the following keys in `invenio.cfg` are pointing to the right URLs, e.g.,::
 

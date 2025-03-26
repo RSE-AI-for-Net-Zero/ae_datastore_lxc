@@ -13,8 +13,6 @@ ae-datastore documentation
 
    index/overview
    index/second_deployment_build
-   index/development
-   index/deployment
 
 
 

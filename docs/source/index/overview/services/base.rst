@@ -3,8 +3,16 @@
 Invenio UI and API
 ------------------
 
-[!ToDo!] celery, celerybeat and uWSGI services managed by systemd. Secrets and environment files.  Logs.  Data directory.
 
+	    
+.. [!ToDo!] Where are Celery and Celerybeat tasks loaded from
+
+
+
+
+.. [!ToDo!] Secrets management
+
+.. [!ToDo!] Possibility of multiple instances of Celery and/or uWSGI to handle heavier loads
   
 How do I update a package?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

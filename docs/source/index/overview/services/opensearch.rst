@@ -3,6 +3,8 @@
 OpenSearch
 ----------
 
+.. [!ToDo!] Single data for opensearch
+
 How do I change passwords?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 

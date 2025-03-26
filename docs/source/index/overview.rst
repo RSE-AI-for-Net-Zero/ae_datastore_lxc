@@ -8,5 +8,6 @@ Overview
 
    overview/summary	     
    overview/services
+   overview/datamodel
    overview/to_do
    
