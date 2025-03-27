@@ -5,7 +5,7 @@ from pprint import pprint
 
 BASEURL = "https://data-dev.ae.ic.ac.uk/api"
 TOKEN = os.environ.get("TOKEN", None)
-COMMUNITY_SLUG = "test2"
+COMMUNITY_SLUG = "test-community"
 
 verify = True
 
@@ -13,6 +13,11 @@ if not TOKEN:
     sys.exit("TOKEN not set")
 
 
+"""
+Community "test-community" has been created and user identity linked to the access token
+has permissions to create drafts, etc.
+"""
+    
 #0. Get community ID
 query_string = f"slug:{COMMUNITY_SLUG}"
 
@@ -34,6 +39,7 @@ assert r.status_code == 201 #Created
 record = r.json()
 record_id = record["id"]
 
+
 #2. Add to community
 r = requests.put(f"{BASEURL}/records/{record_id}/draft/review",
                  params = {"access_token": TOKEN},
@@ -42,7 +48,7 @@ r = requests.put(f"{BASEURL}/records/{record_id}/draft/review",
 
 
 
-#3. Add some invalid domain metadata to record 
+#3a. Add some invalid domain metadata to record 
 record["metadata"] = {"domain_metadata": {"entry_type": {"longitude": 22.0,
                                                          "laaaatitude": 22.0}}}
 r = requests.put(f"{BASEURL}/records/{record_id}/draft",
@@ -53,7 +59,16 @@ r = requests.put(f"{BASEURL}/records/{record_id}/draft",
 assert r.status_code == 422 # Is this an appropriate status_code?
 assert "{\'longitude\': 22.0, \'laaaatitude\': 22.0} is not valid under any of the given schemas" in r.text
 
+#3b. Add some different invalid domain metadata to record 
+record["metadata"] = {"domain_metadata": {"entry_type": {"longitude": 22.0,
+                                                         "latitude": "22.0"}}}
+r = requests.put(f"{BASEURL}/records/{record_id}/draft",
+                 params = {"access_token": TOKEN},
+                 verify = verify,
+                 json = record)
 
+assert r.status_code == 422 # Is this an appropriate status_code?
+assert r"'22.0' is not of type 'number'" in r.text
 
 #4. Add required metadata & some valid domain metadata to record
 record["metadata"] = {"domain_metadata": {"entry_type": {"longitude": 22.0,
@@ -149,6 +164,7 @@ r = requests.delete(f"{BASEURL}/records/{record_id}/draft/files/{filename}",
                     verify = verify)
 
 assert r.status_code == 204 #No Content
+
 
 #9. Request review
 r = requests.post(f"{BASEURL}/records/{record_id}/draft/actions/submit-review",
