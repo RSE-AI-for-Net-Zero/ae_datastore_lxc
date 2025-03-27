@@ -15,8 +15,8 @@ if not PASSWD:
 
 
 """
-Community "test-community" has been created and user identity linked to the access token
-has permissions to create drafts, etc.
+Community "test-community" has been created and testuser has permissions to 
+create drafts, etc.
 """
 
 #0. Log in and store session and csrf cookies - web browser would perhaps do this
@@ -168,7 +168,7 @@ r = requests.post(f"{BASEURL}/records/{record_id}/draft/actions/submit-review",
 assert r.status_code == 202 #Accepted
 
 """
-Record is accepted via GUI
+Someone with required permissions goes and accepts the request via the GUI
 """
 
 #9. Log out

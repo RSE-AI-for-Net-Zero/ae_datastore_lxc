@@ -3,7 +3,6 @@
 OpenSearch
 ----------
 
-.. [!ToDo!] Single data for opensearch
 
 How do I change passwords?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -58,7 +57,7 @@ returns::
   },...
 
 
-We can `Opensearch's search API directly <https://opensearch.org/docs/2.15/api-reference/search/>`_ to search for our record by term using a `dotted query <https://opensearch.org/docs/latest/query-dsl/joining/nested/>`_ (from inside *rdm-invenio-ui-green*)::
+We can use `Opensearch's search API directly <https://opensearch.org/docs/2.15/api-reference/search/>`_ to search for our record by term using a `dotted query <https://opensearch.org/docs/latest/query-dsl/joining/nested/>`_ (from inside *rdm-invenio-ui-green*)::
 
   curl -k -u "ae-datastore:${PASSWD}" \
   -H "Content-type: application/json" \
@@ -102,7 +101,6 @@ and this::
   curl https://data-dev.ae.ic.ac.uk/api/records?q=${SEARCH_QUERY} | python -m json.tool
 
 return nothing.
-  
 
 **Backing up search indices**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

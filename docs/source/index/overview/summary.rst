@@ -64,14 +64,67 @@ Here is a visual summary of all the containers with information about their exte
       "6", "Checks username in access group **acc-data-repo-dev**"
       "7", "Checks username in access group **acc-data-repo**"
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``importlib_metadata.entry_points`` and *invenio-factory-patch*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Invenio makes extensive use of metadata entry points to load all kinds of things
+
+- extension modules via the groups *invenio_base.apps* and *invenio_base.api_apps*
+- blueprints (*invenio_base.blueprints* and *invenio_base.api_blueprints*)
+- database tables (*invenio_db.models*)
+- celery tasks (*invenio_celery.tasks*)
+
+They also give a way to hook into stages of app loading, e.g., *invenio-rdm-domain-records* registers an error handler for *jsonschema* ``ValidationError`` exceptions for the REST API.
+
+To query entry points, do something like this. Start a python interpreter
+
+::
+
+   root@rdm-invenio-ui-green:~# /opt/invenio/src/.venv/bin/python
+
+::
+
+   >>> from importlib_metadata import entry_points
+   >>> for _ in sorted(entry_points(group = "invenio_db.models")): print(_)
+
+As convenient as entry points are, they're a real pain when there's something you **don't** want loading, or you need to be sure that a certain extension is always loaded before others, such as *invenio-ldapclient* (which must load before *invenio-accounts* because it sets certain config values that affect the latter).  This is why `*invenio-factory-patch* <https://github.ic.ac.uk/aeronautics/invenio-factory-patch>`_ exists.
 
 
+
+
+
+  
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Development & production - how to switch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. [!ToDo!] Switch rdm-invenio-{ui,api}-{blue,green} service URLs.
+Currently, green = "dev" and blue = "production".  To switch these over (**important** test this before doing it in production)
 
-.. [!ToDo!] Switch rdm-invenio-{ui,api}-{blue,green} LDAP access groups.
+1. switch over the external filesystem mounts at :file:`/opt/invenio/var/data` and :file:`/opt/invenio/var/log` in each of the containers, so that
+   
+   - */invenio-data-dev* and */invenio-log-dev* are mounted in *rdm-invenio-blue-ui* and *rdm-invenio-blue-api* and
+   - */invenio-data* and */invenio-log* are mounted in *rdm-invenio-green-ui* and *rdm-invenio-green-api*
 
-.. [!ToDo!] Switch rules in HAProxy.
+2. switch each of the service URLs to point appropriately to *service*-dev or *service* .  These are assigned to keys in :file:`invenio.cfg` - change them for both the UI and API containers
+
+   - ``SQLALCHEMY_DATABASE_URI``
+   - ``SQLALCHEMY_DATABASE_URI``
+   - ``CACHE_REDIS_URL``
+   - ``ACCOUNTS_SESSION_REDIS_URL``
+   - ``CELERY_RESULT_BACKEND``
+   - ``RATELIMIT_STORAGE_URL``
+   - ``COMMUNITIES_IDENTITIES_CACHE_REDIS_URL``
+   - ``IIIF_CACHE_REDIS_URL``
+   - ``BROKER_URL``
+   - ``CELERY_BROKER_URL``
+   - ``SEARCH_HOSTS``
+
+3. switch LDAP access group filters, in the key (also in :file:`invenio.cfg` - again, do it for both UI and API)
+
+   - ``LDAPCLIENT_GROUP_SEARCH_FILTERS``
+
+4. finally, switch the routing rules for the inner HAProxy for
+
+   - *store(-dev).ae.ic.ac.uk*
+   - *data(-dev).ae.ic.ac.uk*

@@ -11,7 +11,6 @@ Each deployment requires building the following containers based on a Debian Boo
 - `rdm-invenio-ui`
 - `rdm-invenio-api`
 
-[!ToDo!] List external filesystem mounts.
   
 1. Build `rdm-redis`
 ^^^^^^^^^^^^^^^^^^^^
