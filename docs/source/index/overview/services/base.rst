@@ -3,16 +3,12 @@
 Invenio UI and API
 ------------------
 
-
+.. [!ToDo!] environment files.  Logs.  Data directory.
+.. [!ToDo!] Secrets management
 	    
 .. [!ToDo!] Where are Celery and Celerybeat tasks loaded from
 
 
-
-
-.. [!ToDo!] Secrets management
-
-.. [!ToDo!] Possibility of multiple instances of Celery and/or uWSGI to handle heavier loads
   
 How do I update a package?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
