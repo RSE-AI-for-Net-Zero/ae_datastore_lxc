@@ -127,17 +127,17 @@ Install *Opensearch v2.15.0* from *https://artifacts.opensearch.org* then config
   git checkout <ref>
   mv services/opensearch/data-node/* /root/host/
 
-Set version and (possibly unnecessarily) set gpg signature::
+set version and (possibly unnecessarily) set gpg signature::
 
   OPENSEARCH_VERSION='2.15.0'
   GPG_SIGNATURE='c5b7 4989 65ef d1c2 924b a9d5 39d3 1987 9310 d3fc'
 
-When building from package an initial superuser password is required (see :ref:`opensearch_ref` for how to change this)::
+when building from package an initial superuser password is required (see :ref:`opensearch_ref` for how to change this)::
 
   OPENSEARCH_INITIAL_ADMIN_PASSWORD=<passwd>
 
 
-We also create a user with reduced priviledges named *ae-datastore*, and set its password::
+we also create a user with reduced priviledges named *ae-datastore*, and set its password::
 
   OPENSEARCH_AEDATASTORE_PASSWD=<passwd>
 
@@ -150,12 +150,12 @@ Run the build and configure scripts::
   ./root/host/scripts/configure.sh ${OPENSEARCH_INITIAL_ADMIN_PASSWORD} \
           ${OPENSEARCH_AEDATASTORE_PASSWD}
 
-Did it work?::
+Did it work?  This ::
 
   curl -k -u "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}" https://localhost:9200
   curl -k -u "ae-datastore:${OPENSEARCH_AEDATASTORE_PASSWD}" https://localhost:9200
 
-should both respond with something that looks like::
+should come back with something that looks like::
 
   {
   	"name" : "data-1",
@@ -224,7 +224,7 @@ then restart shell::
 
   exec bash
 
-Doing this now will be helpful in case the build scripts have to be stopped and restared midway when it's easy to forget to reset ``INVENIO_INSTANCE_PATH``.
+Doing this now will be helpful in case the build scripts have to be stopped and restarted midway when it's easy to forget to reset ``INVENIO_INSTANCE_PATH``.
 
 Now install the base dependencies (*pyenv*, *Python3.9*, *node.js*, *npm* & *pipenv*)::
 
@@ -242,7 +242,7 @@ Now install the base dependencies (*pyenv*, *Python3.9*, *node.js*, *npm* & *pip
 6. Build `rdm-invenio-ui` and `rdm-invenio-ui`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These steps are similar for each container, so we described `rdm-invenio-ui` here and make the appropriate changes for `rdm-invenio-api`.
+These steps are similar for each container, so we describe `rdm-invenio-ui` here and make the appropriate changes for `rdm-invenio-api`.
 
 First clear up from the previous build step::
 
@@ -309,7 +309,7 @@ or::
     [lambda u : f'(&(objectclass=posixGroup)(cn=acc-data-repo)(memberUid={u}))']
 
 
-Finally, make sure directory permissions are set appropriately for *${INVENIO_INSTANCE_PATH}/data* and *${INVENIO_INSTANCE_PATH}/log/ae-datastore.app.log*::
+Finally, make sure directory permissions are set appropriately for :code:`${INVENIO_INSTANCE_PATH}/data` and :code:`${INVENIO_INSTANCE_PATH}/log/ae-datastore.app.log`::
 
   chown -R root:ae-datastore ${INVENIO_INSTANCE_PATH}/data ${INVENIO_INSTANCE_PATH}/log \
     ${INVENIO_INSTANCE_PATH}/log/ae-datastore.app.log
@@ -332,13 +332,15 @@ Check the logs to see everything's happy::
 7. Initialse DB, Opensearch indices, message cache, etc.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-First, make sure secrets are loaded into environment variables::
+From inside *rdm-invenio-ui*, first, make sure secrets are loaded into environment variables::
 
   source /etc/conf.d/secrets
 
   export RABBIT_PASSWD
   export SECRET_KEY
   export OPENSEARCH_AEDATASTORE_PASSWD
+
+(if you've set :file:`.bashrc` to load these automatically, then this isn't necessary).
 
 
 Then::

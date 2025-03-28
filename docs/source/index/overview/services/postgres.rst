@@ -8,10 +8,10 @@ To make upgrading postgres easier, the Debian package creators have provided a s
 
 In fact it's worth reading the entire `Debian wiki <https://wiki.debian.org/PostgreSql>`_
 
-Use SQLAlchemy to attempt a connection::
+Use SQLAlchemy to attempt a connection ::
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Start python interpreter in *rdm-invenio-api-{blue,green}*::
+Start python interpreter in *rdm-invenio-api-{blue,green}* ::
 
   /opt/invenio/src/.venv/bin/python
 
@@ -37,7 +37,7 @@ Where are the log files?
 Permissions for ``/var/lib/postgresql/data``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Postgres has requirements about directory permissions::
+Postgres has requirements about directory permissions ::
 
    root@rdm-postgresql-1:/# pg_isready
    /var/run/postgresql:5432 - no response

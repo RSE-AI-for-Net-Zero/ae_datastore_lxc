@@ -21,7 +21,7 @@ The SECRET_KEY config setting is used by Flask to encrypt the session cookie, bu
 Record class hierarchy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-I've put together a few random diagrams in :file:`docs/source/diagrams.records.drawio`, such as this one
+I've put together a few random diagrams in :file:`docs/source/diagrams.records.drawio` to help figure out the internal records API.  Here's a pretty one
 
 .. image:: /images/record_class_hierarchy.drawio.png 
 

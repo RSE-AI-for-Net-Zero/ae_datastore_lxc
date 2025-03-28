@@ -24,11 +24,11 @@ The containers *rdm-invenio-api-blue* and *rdm-invenio-api-green* are very simil
 
 When the uWSGI server receives a request it hands it over to the Invenio WSGI app produced from the appropriate app factories ``invenio_factory_patch.factory.create_ui`` and ``invenio_factory_patch.factory.create_api``.  These WSGI apps are `InvenioRDM v12.0 <https://inveniosoftware.org/products/rdm/>`_ with adaptations to support our use case.  These are the addition of a Flask/Invenio extension to support authentication and access management via an LDAP client (see `<https://github.ic.ac.uk/aeronautics/invenio-ldapclient>`_) and a set of specialisations of Invenio's records management internal API to allow and extended data model beyond DataCite - effected by a new Invenio extension `invenio-rdm-domain-records` (see `<https://github.ic.ac.uk/aeronautics/invenio-rdm-domain-records>`_), which allows a domain-specific metadata subschema to be loaded from and maintained at `<https://github.ic.ac.uk/aeronautics/ae-datastore-schemas>`_.  Finally, the package `invenio-factory-patch <https://github.ic.ac.uk/aeronautics/invenio-factory-patch>`_ replaces the app factories and various entry points to ensure certain Invenio extensions are loaded in a particular way.
 
-Configuration for these is found in all containers in :file:`/opt/invenio/var/instance/invenio.cfg`.  Again, to effect any changes to these configs will require service restart::
+Configuration for these is found in all containers in :file:`/opt/invenio/var/instance/invenio.cfg`.  Again, to effect any changes to these configs will require service restart ::
 
   systemctl restart ui.service celery.service celerybeat.service
 
-or::
+or ::
 
   systemctl restart api.service celery.service celerybeat.service
   
@@ -43,7 +43,7 @@ Supporting this deployment
 - 2 `opensearch v2.15.0 <https://opensearch.org/>`_ data nodes in *rdm-opensearch-d1-(-dev)*
 - 2 `postgresql v15.0 <https://www.postgresql.org/>`_ nodes in *rdm-postgresql-1(-dev)*
   
-Note that this is just an initial deployment. Some of these services might have to be supplemented with additional nodes as demand grows.  For example, `Opensearch recommend a Coordinating and a Cluster Manager node and two Data Nodes as a basic architecture <https://opensearch.org/docs/2.15/tuning-your-cluster/>`_.  The benefit of separating out the ui from the api services is that these will face different load patterns, with the api service dealing with heavy up/downloads, and so you can give these different levels of resource. E.g., you can add additional replicates of the *rdm-invenio* with extra uWSGI services and/or celery workers and letting HAProxy handle the load balancing will reduce latency.
+Note that this is just an initial deployment. Some of these services might have to be supplemented with additional nodes as demand grows.  For example, `Opensearch recommend a Coordinating and a Cluster Manager node and two Data Nodes as a basic architecture <https://opensearch.org/docs/2.15/tuning-your-cluster/>`_.  The benefit of separating out the ui from the api services is that these will face different load patterns, with the api service dealing with heavy up/downloads, and so you can give these different levels of resource. E.g., you can add additional replicates of the *rdm-invenio* containers for extra uWSGI services and/or celery workers then let HAProxy handle the load balancing to reduce latency.
 
 Here is a visual summary of all the containers with information about their external file system mounts.
   
@@ -88,7 +88,7 @@ To query entry points, do something like this. Start a python interpreter
    >>> from importlib_metadata import entry_points
    >>> for _ in sorted(entry_points(group = "invenio_db.models")): print(_)
 
-As convenient as entry points are, they're a real pain when there's something you **don't** want loading, or you need to be sure that a certain extension is always loaded before others, such as *invenio-ldapclient* (which must load before *invenio-accounts* because it sets certain config values that affect the latter).  This is why `*invenio-factory-patch* <https://github.ic.ac.uk/aeronautics/invenio-factory-patch>`_ exists.
+As convenient as entry points are, they're a real pain when there's something you **don't** want loading, or you need to be sure that a certain extension is always loaded before others, such as *invenio-ldapclient* (which must load before *invenio-accounts* because it sets certain config values that affect the latter).  This is why `invenio-factory-patch <https://github.ic.ac.uk/aeronautics/invenio-factory-patch>`_ exists.
 
 
 

@@ -7,12 +7,12 @@ OpenSearch
 How do I change passwords?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Inside container, first get a hash of new password::
+Inside container, first get a hash of new password ::
 
   NEW_PASSWD="..."
   ./root/scripts/hash_passwd.sh ${NEW_PASSWD}
 
-This puts the hashed password into a file named ``hashed.psswd``.  Copy and paste its into the appropriate *hash* field in ``/etc/opensearch/opensearch-security/internal_users.yml`` then run the security config script and restart the service::
+This puts the hashed password into a file named ``hashed.psswd``.  Copy and paste its contents into the appropriate *hash* field in ``/etc/opensearch/opensearch-security/internal_users.yml`` then run the security config script and restart the service ::
 
   OPENSEARCH_JAVA_HOME=/usr/share/opensearch/jdk /usr/share/opensearch/plugins/opensearch-security/tools/securityadmin.sh -cd /etc/opensearch/opensearch-security/ -cacert /etc/opensearch/certs/root-ca.pem -cert /etc/opensearch/certs/admin.pem -key /etc/opensearch/keys/admin-key.pem -icl -nhnv
 
@@ -22,7 +22,7 @@ This puts the hashed password into a file named ``hashed.psswd``.  Copy and past
 Searching records and drafts by domain-metadata terms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Suppose we've created a record with title "Test Record", with domain metadata::
+Suppose we've created a record with title "Test Record", with domain metadata ::
 
   {
   	"entry_type": {
@@ -31,7 +31,7 @@ Suppose we've created a record with title "Test Record", with domain metadata::
 		}
   }
 
-We can see that Opensearch has dynamically created the search terms "longitude" and "latitude" by querying its mapping endpoint for the drafts index (from inside *rdm-invenio-ui-green*)::
+We can see that Opensearch has dynamically created the search terms "longitude" and "latitude" by querying its mapping endpoint for the drafts index (from inside *rdm-invenio-ui-green*) ::
   
   curl -k -u "ae-datastore:${PASSWD}" \
   https://rdm-opensearch-d1-dev:9200/ae-datastore-rdmdomainrecords-records/_mapping \
@@ -57,7 +57,12 @@ returns::
   },...
 
 
-We can use `Opensearch's search API directly <https://opensearch.org/docs/2.15/api-reference/search/>`_ to search for our record by term using a `dotted query <https://opensearch.org/docs/latest/query-dsl/joining/nested/>`_ (from inside *rdm-invenio-ui-green*)::
+You can get a list of Opensearch indices via the command line ::
+
+  ae-datastore index list
+
+  
+We can use `Opensearch's search API directly <https://opensearch.org/docs/2.15/api-reference/search/>`_ to search for our record by term using a `dotted query <https://opensearch.org/docs/latest/query-dsl/joining/nested/>`_ (from inside *rdm-invenio-ui-green*) ::
 
   curl -k -u "ae-datastore:${PASSWD}" \
   -H "Content-type: application/json" \
@@ -66,7 +71,7 @@ We can use `Opensearch's search API directly <https://opensearch.org/docs/2.15/a
   | python -m json.tool | grep -A 10 -B 10 -F "longitude"
 
 
-gives us a search result, whereas::
+gives us a search result, whereas ::
 
   curl -k -u "ae-datastore:${PASSWD}" \
   -H "Content-type: application/json" \
@@ -74,28 +79,28 @@ gives us a search result, whereas::
   -d '{"query": {"match": {"metadata.domain_metadata.entry_type.longitude": 22222222.0}}}' \
   | python -m json.tool | grep -A 10 -B 10 -F "longitude"
 
-gives us nothing.
+gives us nothing - assuming a record with logitude 22222222.0 doesn't exist.
 
 Note that we're passing the search query in the request body.  `InvenioRDM record search API <https://inveniordm.docs.cern.ch/reference/rest_api_drafts_records/#search-records>`_ requires the search query in the URL parameter string under the key "q" using Lucene search query syntax.
 
-This works (from somewhere where data-dev.ae.ic.ac.uk is accessible)::
+This works (from somewhere where data-dev.ae.ic.ac.uk is accessible) ::
 
   SEARCH_QUERY="metadata.domain_metadata.entry_type.longitude:22.0"
   curl https://data-dev.ae.ic.ac.uk/api/records?q=${SEARCH_QUERY} | python -m json.tool
 
-and do does this::
+and do does this (note the "%20" in place of a space) ::
   
   SEARCH_QUERY="title:Test%20Record"
   curl https://data-dev.ae.ic.ac.uk/api/records?q=${SEARCH_QUERY} | python -m json.tool
 
 
-but this::
+but this ::
 
   SEARCH_QUERY="metadata.domain_metadata.entry_type.longitude:222222.0"
   curl https://data-dev.ae.ic.ac.uk/api/records?q=${SEARCH_QUERY} | python -m json.tool
 
 
-and this::
+and this ::
 
   SEARCH_QUERY="metadata.domain_metadata.colour:blue"
   curl https://data-dev.ae.ic.ac.uk/api/records?q=${SEARCH_QUERY} | python -m json.tool
@@ -105,7 +110,7 @@ return nothing.
 **Backing up search indices**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Most of the search indices can be rebuilt from the app's database via the command line::
+Most of the search indices can be rebuilt from the app's database via the command line ::
 
   ae-datastore index reindex
   ae-datastore index run
